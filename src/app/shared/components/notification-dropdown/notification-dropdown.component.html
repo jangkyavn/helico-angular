@@ -1,0 +1,52 @@
+<li class="list-inline-item" nz-popover [nzPopoverTitle]="notificationTitleTemplate" [(nzVisible)]="isShowDropdown"
+    (nzVisibleChange)="onChange($event)" nzPopoverPlacement='bottomRight' nzPopoverTrigger="click"
+    [nzPopoverContent]="notificationContentTemplate">
+    <ng-container *ngIf="countNotify === 0; else elseTemplate">
+        <i nz-icon nzType="bell" nzTheme="outline" style="font-size: 20px;"></i>
+    </ng-container>
+    <ng-template #elseTemplate>
+        <nz-badge [nzCount]="countNotify">
+            <i nz-icon nzType="bell" nzTheme="outline" style="font-size: 20px;"></i>
+        </nz-badge>
+    </ng-template>
+    <ng-template #notificationTitleTemplate>
+        <div nz-row style="margin: 4px 0;">
+            <div nz-col nzSpan="12">Thông báo</div>
+            <div nz-col nzSpan="12" class="text-right">
+                <a *ngIf="pagination.totalItems > 0" nz-popconfirm
+                    nzPopconfirmTitle="Bạn có chắc chắn muốn xóa tất cả thông báo không?" nzPopconfirmPlacement="left"
+                    (nzOnConfirm)="deleteAllNotification()">Xóa tất cả</a>
+            </div>
+        </div>
+    </ng-template>
+    <ng-template #notificationContentTemplate>
+        <nz-list class="notification-list" [nzDataSource]="list" [nzItemLayout]="'horizontal'" [nzLoading]="initLoading"
+            [nzRenderItem]="item" [nzLoadMore]="loadMore">
+            <ng-template #item let-item>
+                <nz-list-item class="notification-item" (click)="readNotification(item)"
+                    [class.read-notification]="item.read">
+                    <nz-skeleton [nzAvatar]="true" [nzActive]="true" [nzTitle]="false" [nzLoading]="item.loading">
+                        <nz-list-item-meta [nzTitle]="nzTitle" [nzAvatar]="avatarTemplate"
+                            [nzDescription]="descriptionTemplate">
+                            <ng-template #nzTitle>
+                                <span>{{item?.senderName}} {{ item?.content }}</span>
+                            </ng-template>
+                            <ng-template #avatarTemplate>
+                                <nz-avatar nzIcon="user" style="background-color:#87d068;"></nz-avatar>
+                            </ng-template>
+                            <ng-template #descriptionTemplate>
+                                <i nz-icon nzType="clock-circle" nzTheme="outline"></i>
+                                {{item.createdDate | relativeTime}}
+                            </ng-template>
+                        </nz-list-item-meta>
+                    </nz-skeleton>
+                </nz-list-item>
+            </ng-template>
+            <ng-template #loadMore>
+                <div class="loadmore" *ngIf="isShowLoadMore">
+                    <button nzSize="small" nz-button *ngIf="!loadingMore" (click)="onLoadMore()">Xem thêm</button>
+                </div>
+            </ng-template>
+        </nz-list>
+    </ng-template>
+</li>

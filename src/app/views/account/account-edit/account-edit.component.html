@@ -1,0 +1,55 @@
+<form nz-form nzLayout="vertical" [formGroup]="accountForm" autocomplete="off" (ngSubmit)="saveChanges()">
+  <nz-form-item>
+    <nz-form-label nzFor="userName" nzRequired>Tài khoản</nz-form-label>
+    <nz-form-control nzErrorTip="Vui lòng nhập tài khoản!">
+      <input nz-input type="text" formControlName="userName" id="userName">
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzFor="fullName" nzRequired>Họ tên</nz-form-label>
+    <nz-form-control nzErrorTip="Vui lòng nhập họ tên!">
+      <input nz-input type="text" formControlName="fullName" id="fullName">
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="email">Email</nz-form-label>
+    <nz-form-control [nzErrorTip]="errorMail">
+      <input type="text" nz-input formControlName="email" id="email" />
+      <ng-template #errorMail let-control>
+        <ng-container *ngIf="control.hasError('required')">
+          Vui lòng nhập email!
+        </ng-container>
+        <ng-container *ngIf="control.hasError('email')">
+          Vui lòng nhập email hợp lệ!
+        </ng-container>
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="gender">Giới tính</nz-form-label>
+    <nz-form-control nzErrorTip="Vui lòng chọn giới tính!">
+      <nz-radio-group formControlName="gender">
+        <label *ngFor="let item of genders" nz-radio [nzValue]="item.value">{{item.name}}</label>
+      </nz-radio-group>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzSm]="7" [nzXs]="24" nzRequired nzFor="birthDay">Ngày sinh</nz-form-label>
+    <nz-form-control [nzSm]="17" [nzXs]="24" nzErrorTip="Vui lòng nhập ngày sinh!">
+      <input type="date" nz-input formControlName="birthDay" id="birthDay" />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzSm]="7" [nzXs]="24" nzRequired nzFor="roleId">Vai trò</nz-form-label>
+    <nz-form-control [nzSm]="17" [nzXs]="24" nzErrorTip="Vui lòng chọn vai trò!">
+      <nz-select nzPlaceHolder="Chọn vai trò" nzAllowClear nzShowSearch formControlName="roleId" id="roleId">
+        <ng-container *ngFor="let item of roles">
+          <nz-option [nzValue]="item.id" [nzLabel]="item.name"></nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item style="margin-bottom: 0;">
+    <button nz-button nzType="primary" type="submit" [nzLoading]="loadingSaveChanges">Cập nhật</button>
+  </nz-form-item>
+</form>

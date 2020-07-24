@@ -1,0 +1,12 @@
+<div nz-row id="notificationbox" (click)="clickNotification()">
+  <div nz-col nzXs="4" nzSm="4" nzMd="4" nzLg="4" nzXl="4">
+    <img src="/assets/bell-icon.png" style="height: 40px;width: 40px;">
+    <!-- <i style="font-size: 30px;" nz-icon nzType="bell" nzTheme="outline" [nzTheme]="'twotone'" [nzTwotoneColor]="'#87d068'"></i> -->
+  </div>
+  <div nz-col nzXs="20" nzSm="20" nzMd="20" nzLg="20" nzXl="20">
+    <div nz-row>
+      <strong>{{notificationRes?.sender}}</strong>
+    </div>
+    <div nz-row>{{notificationRes?.content}}</div>
+  </div>
+</div>

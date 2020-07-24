@@ -1,0 +1,25 @@
+.notification-list {
+    height: auto;
+    max-height: 350px;
+    overflow-y: auto;
+    width: 350px;
+    margin: -12px -16px;
+}
+
+.notification-item {
+    padding-left: 10px;
+    cursor: pointer;
+
+    &:hover {
+        background-color: #e6f7ff;
+    }
+}
+
+.loadmore {
+    text-align: center;
+    margin: 10px 0;
+}
+
+.read-notification {
+    opacity: 0.5;
+}

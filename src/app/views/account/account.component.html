@@ -1,0 +1,26 @@
+<nz-tabset nzTabPosition="left">
+  <nz-tab [nzTitle]="titleTemplate">
+    <ng-template #titleTemplate> Basic setting</ng-template>
+    <h2>Basic setting</h2>
+    <div nz-row [class.displayReverse]="setReverse">
+      <div nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="10" nzXl="10">
+        <app-account-edit></app-account-edit>
+      </div>
+      <div nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="14" nzXl="14"
+        style="display: flex; flex-direction: column; align-items: center;">
+        <nz-avatar nzIcon="user" [nzSize]="144" [nzSrc]="avatar"></nz-avatar>
+        <button style="margin-top: 5px;" nz-button nzType="default" (click)="fImportExcel.click()">
+          <i nz-icon nzType="upload"></i>Đổi ảnh đại diện
+        </button>
+        <input id="fImportExcel" type="file" #fImportExcel (change)="importFile($event)" style="display: none;">
+      </div>
+    </div>
+  </nz-tab>
+  <nz-tab [nzTitle]="titleTemplate1">
+    <ng-template #titleTemplate1>
+      Security setting
+    </ng-template>
+    <h2>Security setting</h2>
+    <app-account-change-password></app-account-change-password>
+  </nz-tab>
+</nz-tabset>

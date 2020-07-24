@@ -1,0 +1,25 @@
+<div class="login-wrapper">
+  <form nz-form [formGroup]="loginForm" class="login-form" (ngSubmit)="submitForm()">
+    <nz-form-item>
+      <nz-form-control nzErrorTip="Vui lòng nhập tài khoản!">
+        <nz-input-group nzPrefixIcon="user">
+          <input type="text" nz-input formControlName="userName" placeholder="Tài khoản" />
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control nzErrorTip="Vui lòng nhập mật khẩu">
+        <nz-input-group nzPrefixIcon="lock" [nzSuffix]="suffixTemplate">
+          <input [type]="passwordVisible ? 'text' : 'password'" nz-input formControlName="password"
+            placeholder="Mật khẩu" />
+        </nz-input-group>
+        <ng-template #suffixTemplate>
+          <i style="cursor: pointer;" nz-icon [nzType]="passwordVisible ? 'eye-invisible' : 'eye'"
+            (click)="passwordVisible = !passwordVisible"></i>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <button nz-button nzBlock="true" class="login-form-button login-form-margin" [nzType]="'primary'"
+      [nzLoading]="isLoading">Đăng nhập</button>
+  </form>
+</div>

@@ -1,0 +1,80 @@
+<nz-layout class="app-layout">
+  <nz-sider class="menu-sidebar" nzCollapsible nzWidth="256px" nzBreakpoint="md" [(nzCollapsed)]="isCollapsed"
+    [nzTrigger]="null">
+    <div class="sidebar-logo">
+      <a [routerLink]="['/']">
+        <img src="https://ng.ant.design/assets/img/logo.svg" alt="logo">
+        <h1>Helico</h1>
+      </a>
+    </div>
+    <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+      <li nz-submenu nzOpen nzTitle="Hệ thống" nzIcon="setting">
+        <ul>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="/he-thong/nguoi-dung">Người dùng</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </nz-sider>
+  <nz-layout>
+    <nz-header>
+      <div class="app-header">
+        <div nz-row>
+          <div nz-col nzXs="2" nzSm="2" nzMd="2" nzLg="2" nzXl="2">
+            <span class="header-trigger" (click)="clickToggleCollapse()">
+              <i class="trigger" nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"></i>
+            </span>
+          </div>
+          <div nz-col nzXs="22" nzSm="22" nzMd="22" nzLg="22" nzXl="22" style="text-align: right;">
+            <ul class="list-inline">
+              <app-notification-dropdown></app-notification-dropdown>
+              <li class="list-inline-item" nz-dropdown [nzDropdownMenu]="accountMenu">
+                <a>
+                  <nz-avatar nzIcon="user" [nzSrc]="avatar"></nz-avatar>
+                  <span style="color: black; margin-left: 5px;">{{authService.getUser()?.unique_name}}</span>
+                </a>
+                <nz-dropdown-menu #accountMenu="nzDropdownMenu">
+                  <ul nz-menu nzSelectable>
+                    <li nz-menu-item [routerLink]="['/tai-khoan']">
+                      <i nz-icon nzType="user" nzTheme="outline"></i>
+                      <span>Quản lý tài khoản</span>
+                    </li>
+                    <li nz-menu-divider></li>
+                    <li nz-menu-item (click)="logout()">
+                      <i nz-icon nzType="logout" nzTheme="outline"></i>
+                      <span>Đăng xuất</span>
+                    </li>
+                  </ul>
+                </nz-dropdown-menu>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </nz-header>
+    <nz-content>
+      <div class="inner-content">
+        <router-outlet></router-outlet>
+      </div>
+    </nz-content>
+  </nz-layout>
+</nz-layout>
+<ng-template let-data="data" #notificationTemplate>
+  <app-toast-notification [notificationRes]="data" (isClickedToast)="clickedToast($event)">
+  </app-toast-notification>
+</ng-template>
+
+<div *ngIf="loadingRoute" class="wrapper">
+  <div class="loader"></div>
+</div>
+
+<div *ngIf="loadingRoute" style="min-width: 100vw !important;
+  min-height: 100vh;
+  background: black;
+  position: fixed;
+  top: 0px;
+  opacity: 0.2;
+  z-index: 960;
+  ">
+</div>

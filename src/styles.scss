@@ -1,0 +1,21 @@
+* {
+    font-family: Helvetica, Arial, sans-serif;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.cursor-row tr {
+    cursor: pointer;
+}
+
+.table-actions {
+    margin-bottom: 10px;
+}
+
+input:disabled,
+nz-select-item,
+.ant-checkbox-wrapper span {
+    color: rgba(0, 0, 0, 0.65) !important;
+}
