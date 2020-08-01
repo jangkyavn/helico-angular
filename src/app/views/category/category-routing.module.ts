@@ -9,12 +9,12 @@ const routes: Routes = [
         },
         children: [
             {
-                path: 'loai-san-phan',
+                path: 'loai-san-pham',
                 loadChildren: () => import('./product-category/product-category.module').then(m => m.ProductCategoryModule)
             },
             {
                 path: '',
-                redirectTo: 'loai-san-phan',
+                redirectTo: 'loai-san-pham',
                 pathMatch: 'full'
             }
         ]

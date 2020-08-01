@@ -7,11 +7,20 @@
         <h1>Helico</h1>
       </a>
     </div>
-    <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+    <ul *appHasRole="['Admin']" nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
       <li nz-submenu nzOpen nzTitle="Hệ thống" nzIcon="setting">
         <ul>
           <li nz-menu-item nzMatchRouter>
             <a routerLink="/he-thong/nguoi-dung">Người dùng</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+      <li nz-submenu nzOpen nzTitle="Danh mục" nzIcon="setting">
+        <ul>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="/danh-muc/loai-san-pham">Loại sản phẩm</a>
           </li>
         </ul>
       </li>

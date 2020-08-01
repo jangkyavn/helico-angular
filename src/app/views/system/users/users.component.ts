@@ -17,6 +17,7 @@ import { UserAddEditModalComponent } from './modals/user-add-edit-modal/user-add
 export class UsersComponent implements OnInit {
   listOfData: User[] = [];
   loading = true;
+  isFirstLoad = true;
   pagination: Pagination = {};
   pagingParams: PagingParams = {
     keyword: '',
@@ -129,14 +130,17 @@ export class UsersComponent implements OnInit {
   }
 
   onQueryParamsChange(params: NzTableQueryParams) {
+    if (this.isFirstLoad) {
+      return;
+    }
+    this.isFirstLoad = false;
     const { pageSize, pageIndex, sort } = params;
     const currentSort = sort.find(item => item.value !== null);
     this.pagingParams.sortKey = (currentSort && currentSort.key) || '';
     this.pagingParams.sortValue = (currentSort && currentSort.value) || '';
     this.pagination.currentPage = pageIndex;
     this.pagination.itemsPerPage = pageSize;
-    console.log('a');
-    // this.loadData();
+    this.loadData();
   }
 
   search(keyword: string) {
