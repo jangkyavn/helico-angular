@@ -7,18 +7,18 @@ import { MessageService } from 'src/app/shared/services/message.service';
 import { User } from 'src/app/shared/models/user.model';
 import { MessageConstant } from 'src/app/shared/constants/message.constant';
 import { SystemConstant } from 'src/app/shared/constants/system.constant';
-import { ProductCategoryAddEditModalComponent } from './modals/product-category-add-edit-modal/product-category-add-edit-modal.component';
-import { ProductCategoryService } from 'src/app/shared/services/product-category.service';
+import { ProjectCategoryAddEditModalComponent } from './modals/project-category-add-edit-modal/project-category-add-edit-modal.component';
+import { ProjectCategoryService } from 'src/app/shared/services/project-category.service';
 import { LanguageService } from 'src/app/shared/services/language.service';
 import { Subscription } from 'rxjs';
 import { DataService } from 'src/app/shared/services/data.service';
 
 @Component({
-  selector: 'app-product-category',
-  templateUrl: './product-category.component.html',
-  styleUrls: ['./product-category.component.scss']
+  selector: 'app-project-category',
+  templateUrl: './project-category.component.html',
+  styleUrls: ['./project-category.component.scss']
 })
-export class ProductCategoryComponent implements OnInit, OnDestroy {
+export class ProjectCategoryComponent implements OnInit, OnDestroy {
   listOfData: any[] = [];
   loading = false;
   isFirstLoad = true;
@@ -40,7 +40,7 @@ export class ProductCategoryComponent implements OnInit, OnDestroy {
   constructor(
     private modalService: NzModalService,
     private nzContextMenuService: NzContextMenuService,
-    private productCategoryService: ProductCategoryService,
+    private projectCategoryService: ProjectCategoryService,
     private messageService: MessageService,
     private languageService: LanguageService,
     private dataService: DataService
@@ -70,7 +70,7 @@ export class ProductCategoryComponent implements OnInit, OnDestroy {
       this.pagination.currentPage = 1;
     }
     this.loading = true;
-    this.productCategoryService.getAllPaging(
+    this.projectCategoryService.getAllPaging(
       this.pagination.currentPage || 1,
       this.pagination.itemsPerPage || SystemConstant.PAGE_SIZE,
       this.pagingParams)
@@ -96,8 +96,8 @@ export class ProductCategoryComponent implements OnInit, OnDestroy {
 
   create() {
     const modal = this.modalService.create({
-      nzTitle: 'Thêm mới loại sản phẩm',
-      nzContent: ProductCategoryAddEditModalComponent,
+      nzTitle: 'Thêm mới loại dự án',
+      nzContent: ProjectCategoryAddEditModalComponent,
       nzStyle: {
         top: SystemConstant.MODAL_TOP
       },
@@ -121,11 +121,11 @@ export class ProductCategoryComponent implements OnInit, OnDestroy {
   }
 
   update(data: User) {
-    this.productCategoryService.getById(data.id, this.pagingParams.languageId)
+    this.projectCategoryService.getById(data.id, this.pagingParams.languageId)
       .subscribe((res: User) => {
         const modal = this.modalService.create({
-          nzTitle: 'Cập nhật loại sản phẩm',
-          nzContent: ProductCategoryAddEditModalComponent,
+          nzTitle: 'Cập nhật loại dự án',
+          nzContent: ProjectCategoryAddEditModalComponent,
           nzStyle: {
             top: SystemConstant.MODAL_TOP
           },
@@ -150,7 +150,7 @@ export class ProductCategoryComponent implements OnInit, OnDestroy {
 
   delete(id: any) {
     this.messageService.confirm(MessageConstant.CONFIRM_DELETE_MSG, () => {
-      this.productCategoryService.delete(id).subscribe((res: boolean) => {
+      this.projectCategoryService.delete(id).subscribe((res: boolean) => {
         if (res) {
           this.messageService.success(MessageConstant.DELETED_OK_MSG);
           this.loadData();
@@ -189,7 +189,7 @@ export class ProductCategoryComponent implements OnInit, OnDestroy {
 
   drop(event: CdkDragDrop<string[]>): void {
     moveItemInArray(this.listOfData, event.previousIndex, event.currentIndex);
-    this.productCategoryService.ChangePosition(this.listOfData)
+    this.projectCategoryService.ChangePosition(this.listOfData)
       .subscribe((res: any) => {
         if (res) {
           this.messageService.success(MessageConstant.UPDATE_POSITION_OK_MSG);

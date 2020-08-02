@@ -1,0 +1,51 @@
+<nz-spin [nzSpinning]="spinning">
+  <form nz-form [formGroup]="projectCategoryForm" autocomplete="off">
+    <nz-form-item>
+      <nz-form-label [nzSm]="7" [nzXs]="24" nzFor="languageId">Ngôn ngữ</nz-form-label>
+      <nz-form-control [nzSm]="17" [nzXs]="24">
+        <nz-select [nzDisabled]="projectCategoryForm.dirty" formControlName="languageId" id="languageId" (ngModelChange)="changeLanguage($event)">
+          <nz-option *ngFor="let item of languages" [nzValue]="item.id" [nzLabel]="item.name"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="7" [nzXs]="24" nzRequired nzFor="name">Tên loại</nz-form-label>
+      <nz-form-control [nzSm]="17" [nzXs]="24" nzErrorTip="Vui lòng nhập tên loại sản phẩm.">
+        <input type="text" nz-input formControlName="name" id="name" (keyup)="changeTenLoai($event.target.value)" />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="7" [nzXs]="24" nzRequired nzFor="seoAlias">Đường dẫn seo</nz-form-label>
+      <nz-form-control [nzSm]="17" [nzXs]="24">
+        <input type="text" nz-input formControlName="seoAlias" id="seoAlias" readonly />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="7" [nzXs]="24" nzRequired nzFor="seoPageTitle">Tên tiêu đề</nz-form-label>
+      <nz-form-control [nzSm]="17" [nzXs]="24" nzErrorTip="Vui lòng nhập tên tiêu đề.">
+        <input type="text" nz-input formControlName="seoPageTitle" id="seoPageTitle" />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="7" [nzXs]="24" nzFor="seoKeywords">Từ khóa seo</nz-form-label>
+      <nz-form-control [nzSm]="17" [nzXs]="24">
+        <textarea nz-input formControlName="seoKeywords" id="seoKeywords"></textarea>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="7" [nzXs]="24" nzFor="seoDescription">Mô tả seo</nz-form-label>
+      <nz-form-control [nzSm]="17" [nzXs]="24">
+        <textarea nz-input formControlName="seoDescription" id="seoDescription"></textarea>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</nz-spin>
+
+<div *nzModalFooter>
+  <button [disabled]="!projectCategoryForm.dirty" nz-button nzType="primary" (click)="saveChanges()" [nzLoading]="loadingSaveChanges">
+    <i nz-icon nzType="save" nzTheme="outline"></i>Lưu
+  </button>
+  <button nz-button nzType="default" (click)="destroyModal()">
+    <i nz-icon nzType="close" nzTheme="outline"></i>Hủy
+  </button>
+</div>
