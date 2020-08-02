@@ -11,7 +11,7 @@
     <nz-form-item>
       <nz-form-label [nzSm]="7" [nzXs]="24" nzRequired nzFor="name">Tên loại</nz-form-label>
       <nz-form-control [nzSm]="17" [nzXs]="24" nzErrorTip="Vui lòng nhập tên loại sản phẩm.">
-        <input type="text" nz-input formControlName="name" id="name" (keyup)="changeTenLoai($event.target.value)" />
+        <input type="text" nz-input formControlName="name" id="name" (keyup)="changeName($event.target.value)" />
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>

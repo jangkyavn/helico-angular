@@ -131,7 +131,7 @@ export class ProjectCategoryAddEditModalComponent implements OnInit {
     }
   }
 
-  changeTenLoai(input: any) {
+  changeName(input: any) {
     console.log(input);
     this.projectCategoryForm.patchValue({
       seoAlias: makeSeoAlias(input)
@@ -139,7 +139,7 @@ export class ProjectCategoryAddEditModalComponent implements OnInit {
   }
 
   changeLanguage(event: any) {
-    console.log('aaa');
+    this.spinning = true;
     this.projectCategoryForm.markAsPristine();
     if (this.isAddNew === false) {
       this.projectCategoryService.getById(this.data.id, event)
@@ -157,6 +157,7 @@ export class ProjectCategoryAddEditModalComponent implements OnInit {
             status: res.status
           });
           this.projectCategoryForm.markAsPristine();
+          this.spinning = false;
         });
     }
   }

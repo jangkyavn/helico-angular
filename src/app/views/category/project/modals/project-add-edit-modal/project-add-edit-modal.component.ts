@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, HostListener } from '@angular/core';
-import { ProductCategoryService } from 'src/app/shared/services/product-category.service';
+import { ProjectService } from 'src/app/shared/services/project.service';
 import { MessageService } from 'src/app/shared/services/message.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzModalRef } from 'ng-zorro-antd';
@@ -8,20 +8,22 @@ import { forkJoin } from 'rxjs';
 import { MessageConstant } from 'src/app/shared/constants/message.constant';
 import { makeSeoAlias } from 'src/app/shared/functions/utilities.function';
 import { DataService } from 'src/app/shared/services/data.service';
+import { ProjectCategoryService } from 'src/app/shared/services/project-category.service';
 
 @Component({
-  selector: 'app-product-category-add-edit-modal',
-  templateUrl: './product-category-add-edit-modal.component.html',
-  styleUrls: ['./product-category-add-edit-modal.component.scss']
+  selector: 'app-project-add-edit-modal',
+  templateUrl: './project-add-edit-modal.component.html',
+  styleUrls: ['./project-add-edit-modal.component.scss']
 })
-export class ProductCategoryAddEditModalComponent implements OnInit {
+export class ProjectAddEditModalComponent implements OnInit {
   @Input() data: any;
   @Input() isAddNew: boolean;
   @Input() selectedLanguage: string;
   spinning: boolean;
-  productCategoryForm: FormGroup;
+  projectForm: FormGroup;
   loadingSaveChanges: boolean;
   languages: any[] = [];
+  projectCategories: any[] = [];
 
   @HostListener('window:keydown', ['$event'])
   onKeyPress($event: KeyboardEvent) {
@@ -33,7 +35,8 @@ export class ProductCategoryAddEditModalComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private modal: NzModalRef,
-    private productCategoryService: ProductCategoryService,
+    private projectService: ProjectService,
+    private projectCategoryService: ProjectCategoryService,
     private languageService: LanguageService,
     private dataService: DataService,
     private messageService: MessageService,
@@ -41,20 +44,22 @@ export class ProductCategoryAddEditModalComponent implements OnInit {
 
   ngOnInit() {
     this.createForm();
-    this.productCategoryForm.reset();
+    this.projectForm.reset();
 
     this.spinning = true;
     this.forkJoin().subscribe((res: any) => {
       this.languages = res[0];
+      this.projectCategories = res[1];
+      console.log(res[1]);
 
       if (this.isAddNew) {
-        this.productCategoryForm.patchValue({
+        this.projectForm.patchValue({
           ...this.data,
           languageId: this.selectedLanguage,
           status: this.isAddNew ? true : this.data.status
         });
       } else {
-        this.productCategoryForm.patchValue({
+        this.projectForm.patchValue({
           ...this.data
         });
       }
@@ -65,16 +70,19 @@ export class ProductCategoryAddEditModalComponent implements OnInit {
 
   forkJoin() {
     return forkJoin([
-      this.languageService.getAll()
+      this.languageService.getAll(),
+      this.projectCategoryService.getAll(this.selectedLanguage)
     ]);
   }
 
   createForm() {
-    this.productCategoryForm = this.fb.group({
+    this.projectForm = this.fb.group({
       id: [null],
-      position: [null],
+      categoryId: [null, [Validators.required]],
       languageId: [null],
       name: [null, [Validators.required]],
+      description: [null],
+      content: [null],
       seoPageTitle: [null, [Validators.required]],
       seoAlias: [null, [Validators.required]],
       seoKeywords: [null],
@@ -88,24 +96,24 @@ export class ProductCategoryAddEditModalComponent implements OnInit {
   saveChanges() {
     this.loadingSaveChanges = true;
 
-    if (this.productCategoryForm.invalid) {
+    if (this.projectForm.invalid) {
       // tslint:disable-next-line:forin
-      for (const i in this.productCategoryForm.controls) {
-        this.productCategoryForm.controls[i].markAsDirty();
-        this.productCategoryForm.controls[i].updateValueAndValidity();
+      for (const i in this.projectForm.controls) {
+        this.projectForm.controls[i].markAsDirty();
+        this.projectForm.controls[i].updateValueAndValidity();
       }
 
       this.loadingSaveChanges = false;
       return;
     }
 
-    const data = this.productCategoryForm.getRawValue();
+    const data = this.projectForm.getRawValue();
     if (this.isAddNew) {
-      this.productCategoryService.create(data).subscribe((res: any) => {
+      this.projectService.create(data).subscribe((res: any) => {
         if (res) {
           this.messageService.success(MessageConstant.CREATED_OK_MSG);
           this.loadingSaveChanges = false;
-          this.productCategoryForm.markAsPristine();
+          this.projectForm.markAsPristine();
           this.isAddNew = false;
           this.data = res;
           this.dataService.loadData(true);
@@ -116,11 +124,11 @@ export class ProductCategoryAddEditModalComponent implements OnInit {
         this.loadingSaveChanges = false;
       });
     } else {
-      this.productCategoryService.update(data).subscribe((res: any) => {
+      this.projectService.update(data).subscribe((res: any) => {
         if (res) {
           this.messageService.success(MessageConstant.UPDATED_OK_MSG);
           this.loadingSaveChanges = false;
-          this.productCategoryForm.markAsPristine();
+          this.projectForm.markAsPristine();
           this.dataService.loadData(true);
         }
 
@@ -133,30 +141,43 @@ export class ProductCategoryAddEditModalComponent implements OnInit {
 
   changeName(input: any) {
     console.log(input);
-    this.productCategoryForm.patchValue({
+    this.projectForm.patchValue({
       seoAlias: makeSeoAlias(input)
     });
   }
 
   changeLanguage(event: any) {
     this.spinning = true;
-    this.productCategoryForm.markAsPristine();
+    this.projectForm.markAsPristine();
     if (this.isAddNew === false) {
-      this.productCategoryService.getById(this.data.id, event)
-        .subscribe((res: any) => {
-          this.productCategoryForm.patchValue({
-            id: res.id,
-            position: res.position,
-            name: res.name,
-            seoPageTitle: res.seoPageTitle,
-            seoAlias: res.seoAlias,
-            seoKeywords: res.seoKeywords,
-            seoDescription: res.seoDescription,
-            createdDate: res.createdDate,
-            createdBy: res.createdBy,
-            status: res.status
-          });
-          this.productCategoryForm.markAsPristine();
+      forkJoin([
+        this.projectService.getById(this.data.id, event),
+        this.projectCategoryService.getAll(event)
+      ]).subscribe((res: any) => {
+        const getById = res[0];
+        this.projectCategories = res[1];
+
+        this.projectForm.patchValue({
+          id: getById.id,
+          categoryId: getById.categoryId,
+          name: getById.name,
+          description: getById.description,
+          content: getById.content,
+          seoPageTitle: getById.seoPageTitle,
+          seoAlias: getById.seoAlias,
+          seoKeywords: getById.seoKeywords,
+          seoDescription: getById.seoDescription,
+          createdDate: getById.createdDate,
+          createdBy: getById.createdBy,
+          status: getById.status
+        });
+        this.projectForm.markAsPristine();
+        this.spinning = false;
+      });
+    } else {
+      this.projectCategoryService.getAll(event)
+        .subscribe((res: any[]) => {
+          this.projectCategories = res;
           this.spinning = false;
         });
     }

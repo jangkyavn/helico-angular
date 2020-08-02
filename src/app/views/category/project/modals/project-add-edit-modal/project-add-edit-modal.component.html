@@ -1,15 +1,15 @@
 <nz-spin [nzSpinning]="spinning">
-  <form nz-form [formGroup]="productCategoryForm" autocomplete="off">
+  <form nz-form [formGroup]="projectForm" autocomplete="off">
     <nz-form-item>
       <nz-form-label [nzSm]="7" [nzXs]="24" nzFor="languageId">Ngôn ngữ</nz-form-label>
       <nz-form-control [nzSm]="17" [nzXs]="24">
-        <nz-select [nzDisabled]="productCategoryForm.dirty" formControlName="languageId" id="languageId" (ngModelChange)="changeLanguage($event)">
+        <nz-select [nzDisabled]="projectForm.dirty" formControlName="languageId" id="languageId" (ngModelChange)="changeLanguage($event)">
           <nz-option *ngFor="let item of languages" [nzValue]="item.id" [nzLabel]="item.name"></nz-option>
         </nz-select>
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
-      <nz-form-label [nzSm]="7" [nzXs]="24" nzRequired nzFor="name">Tên loại</nz-form-label>
+      <nz-form-label [nzSm]="7" [nzXs]="24" nzRequired nzFor="name">Tên dự án</nz-form-label>
       <nz-form-control [nzSm]="17" [nzXs]="24" nzErrorTip="Vui lòng nhập tên loại sản phẩm.">
         <input type="text" nz-input formControlName="name" id="name" (keyup)="changeName($event.target.value)" />
       </nz-form-control>
@@ -18,6 +18,14 @@
       <nz-form-label [nzSm]="7" [nzXs]="24" nzRequired nzFor="seoAlias">Đường dẫn seo</nz-form-label>
       <nz-form-control [nzSm]="17" [nzXs]="24">
         <input type="text" nz-input formControlName="seoAlias" id="seoAlias" readonly />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="7" [nzXs]="24" nzRequired nzFor="categoryId">Loại dự án</nz-form-label>
+      <nz-form-control [nzSm]="17" [nzXs]="24" nzErrorTip="Vui lòng chọn loại dự án.">
+        <nz-select formControlName="categoryId" id="categoryId">
+          <nz-option *ngFor="let item of projectCategories" [nzValue]="item.id" [nzLabel]="item.name"></nz-option>
+        </nz-select>
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
@@ -42,7 +50,7 @@
 </nz-spin>
 
 <div *nzModalFooter>
-  <button [disabled]="!productCategoryForm.dirty" nz-button nzType="primary" (click)="saveChanges()" [nzLoading]="loadingSaveChanges">
+  <button [disabled]="!projectForm.dirty" nz-button nzType="primary" (click)="saveChanges()" [nzLoading]="loadingSaveChanges">
     <i nz-icon nzType="save" nzTheme="outline"></i>Lưu
   </button>
   <button nz-button nzType="default" (click)="destroyModal()">

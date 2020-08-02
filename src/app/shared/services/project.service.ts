@@ -10,15 +10,15 @@ import { PaginatedResult } from '../models/pagination.model';
 @Injectable({
     providedIn: 'root'
 })
-export class ProjectCategoryService {
-    baseUrl = this.env.apiUrl + '/api/ProjectCategory/';
+export class ProjectService {
+    baseUrl = this.env.apiUrl + '/api/Project/';
 
     constructor(
         private http: HttpClient,
         private env: EnvService) { }
 
-    getAll(languageId: string) {
-        return this.http.get(this.baseUrl + languageId);
+    getAll() {
+        return this.http.get(this.baseUrl);
     }
 
     getAllPaging(page?: any, itemsPerPage?: any, pagingParams?: PagingParams): Observable<PaginatedResult<any[]>> {
@@ -56,10 +56,6 @@ export class ProjectCategoryService {
 
     update(data: any) {
         return this.http.put(this.baseUrl, data);
-    }
-
-    ChangePosition(data: any[]) {
-        return this.http.put(this.baseUrl + 'ChangePosition', data);
     }
 
     delete(id: any) {
