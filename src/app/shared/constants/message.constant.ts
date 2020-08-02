@@ -12,4 +12,6 @@ export class MessageConstant {
     public static UPDATE_STATUS_OK = 'Cập nhật trạng thái thành công!';
     public static UPDATE_POSITION_OK = 'Cập nhật vị trí thành công!';
     public static UPDATE_AVATAR_OK = 'Cập nhật ảnh đại diện thành công!';
+
+    public static UPDATE_POSITION_OK_MSG = 'Cập nhật vị trí thành công.';
 }

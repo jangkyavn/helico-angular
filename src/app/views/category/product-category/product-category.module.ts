@@ -3,6 +3,7 @@ import { ProductCategoryComponent } from './product-category.component';
 import { ProductCategoryRoutingModule } from './product-category-routing.module';
 import { SharedModule } from 'src/app/shared/modules/shared.module';
 import { ProductCategoryAddEditModalComponent } from './modals/product-category-add-edit-modal/product-category-add-edit-modal.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 const APP_MODALS = [
   ProductCategoryAddEditModalComponent
@@ -11,6 +12,7 @@ const APP_MODALS = [
 @NgModule({
   imports: [
     SharedModule,
+    DragDropModule,
     ProductCategoryRoutingModule
   ],
   declarations: [

@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NzContextMenuService, NzDropdownMenuComponent, NzTableQueryParams, NzModalService } from 'ng-zorro-antd';
 import { Pagination, PaginatedResult } from 'src/app/shared/models/pagination.model';
 import { PagingParams } from 'src/app/shared/heplers/paging.param';
-import { UserService } from 'src/app/shared/services/user.service';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MessageService } from 'src/app/shared/services/message.service';
 import { User } from 'src/app/shared/models/user.model';
 import { MessageConstant } from 'src/app/shared/constants/message.constant';
@@ -25,7 +25,7 @@ export class ProductCategoryComponent implements OnInit, OnDestroy {
   languages: any[] = [];
   pagination: Pagination = {
     currentPage: 1,
-    itemsPerPage: 10
+    itemsPerPage: -1
   };
   loadDataSub: Subscription;
   pagingParams: PagingParams = {
@@ -185,5 +185,15 @@ export class ProductCategoryComponent implements OnInit, OnDestroy {
   changeLanguage(event: any) {
     this.pagingParams.languageId = event;
     this.loadData();
+  }
+
+  drop(event: CdkDragDrop<string[]>): void {
+    moveItemInArray(this.listOfData, event.previousIndex, event.currentIndex);
+    this.productCategoryService.ChangePosition(this.listOfData)
+      .subscribe((res: any) => {
+        if (res) {
+          this.messageService.success(MessageConstant.UPDATE_POSITION_OK_MSG)
+        }
+      });
   }
 }

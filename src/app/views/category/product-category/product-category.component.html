@@ -1,4 +1,4 @@
-<nz-card  class="table-card" nzSize="small" nzTitle="Danh sách loại sản phẩm" [nzExtra]="extraTemplate">
+<nz-card class="table-card" nzSize="small" nzTitle="Danh sách loại sản phẩm" [nzExtra]="extraTemplate">
   <div nz-row class="table-actions">
     <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
       <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
@@ -16,18 +16,20 @@
       </button>
     </div>
   </div>
-  
   <nz-table nzShowSizeChanger nzBordered nzSize="small" [nzData]="listOfData" [nzFrontPagination]="false"
     [nzShowQuickJumper]="pagination?.totalPages > 1" [nzLoading]="loading" [nzTotal]="pagination?.totalItems"
     [nzPageSize]="pagination?.itemsPerPage" [nzPageIndex]="pagination?.currentPage"
     (nzQueryParams)="onQueryParamsChange($event)">
     <thead>
       <tr>
+        <th style="width: 5%">STT</th>
         <th>Tên loại sản phẩm</th>
       </tr>
     </thead>
-    <tbody class="cursor-row">
-      <tr *ngFor="let data of listOfData" (contextmenu)="contextMenu($event, menu)" (dblclick)="update(data)">
+    <tbody class="cursor-row" cdkDropList (cdkDropListDropped)="drop($event)">
+      <tr *ngFor="let data of listOfData; let i=index" (contextmenu)="contextMenu($event, menu)" cdkDrag
+        (dblclick)="update(data)">
+        <td>{{i + 1}}</td>
         <td>{{ data?.name }}</td>
         <nz-dropdown-menu #menu="nzDropdownMenu">
           <ul nz-menu>
@@ -48,4 +50,3 @@
     <nz-option *ngFor="let item of languages" [nzValue]="item.id" [nzLabel]="item.name"></nz-option>
   </nz-select>
 </ng-template>
-
