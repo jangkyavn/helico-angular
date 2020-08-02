@@ -18,6 +18,9 @@ export class DataService {
     subUpdateAvatar = new BehaviorSubject<boolean>(false);
     updateAvatar$ = this.subUpdateAvatar.asObservable();
 
+    subLoadData = new BehaviorSubject<boolean>(false);
+    loadData$ = this.subLoadData.asObservable();
+
     addNotification(message: NotificationResponse) {
         this.subAddNotification.next(message);
     }
@@ -32,5 +35,9 @@ export class DataService {
 
     updateAvatar(message: boolean) {
         this.subUpdateAvatar.next(message);
+    }
+
+    loadData(message: boolean) {
+        this.subLoadData.next(message);
     }
 }

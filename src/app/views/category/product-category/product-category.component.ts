@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NzContextMenuService, NzDropdownMenuComponent, NzTableQueryParams, NzModalService } from 'ng-zorro-antd';
 import { Pagination, PaginatedResult } from 'src/app/shared/models/pagination.model';
 import { PagingParams } from 'src/app/shared/heplers/paging.param';
@@ -10,13 +10,15 @@ import { SystemConstant } from 'src/app/shared/constants/system.constant';
 import { ProductCategoryAddEditModalComponent } from './modals/product-category-add-edit-modal/product-category-add-edit-modal.component';
 import { ProductCategoryService } from 'src/app/shared/services/product-category.service';
 import { LanguageService } from 'src/app/shared/services/language.service';
+import { Subscription } from 'rxjs';
+import { DataService } from 'src/app/shared/services/data.service';
 
 @Component({
   selector: 'app-product-category',
   templateUrl: './product-category.component.html',
   styleUrls: ['./product-category.component.scss']
 })
-export class ProductCategoryComponent implements OnInit {
+export class ProductCategoryComponent implements OnInit, OnDestroy {
   listOfData: any[] = [];
   loading = false;
   isFirstLoad = true;
@@ -25,6 +27,7 @@ export class ProductCategoryComponent implements OnInit {
     currentPage: 1,
     itemsPerPage: 10
   };
+  loadDataSub: Subscription;
   pagingParams: PagingParams = {
     keyword: '',
     sortKey: '',
@@ -39,7 +42,8 @@ export class ProductCategoryComponent implements OnInit {
     private nzContextMenuService: NzContextMenuService,
     private productCategoryService: ProductCategoryService,
     private messageService: MessageService,
-    private languageService: LanguageService
+    private languageService: LanguageService,
+    private dataService: DataService
   ) { }
 
   ngOnInit() {
@@ -48,6 +52,17 @@ export class ProductCategoryComponent implements OnInit {
       this.pagingParams.languageId = this.languages.filter(x => x.isDefault === true)[0].id;
       this.loadData();
     });
+
+    this.loadDataSub = this.dataService.loadData$
+      .subscribe((res: boolean) => {
+        if (res) {
+          this.loadData();
+        }
+      });
+  }
+
+  ngOnDestroy() {
+    this.loadDataSub.unsubscribe();
   }
 
   loadData(reset: boolean = false): void {
@@ -93,7 +108,8 @@ export class ProductCategoryComponent implements OnInit {
       nzClosable: true,
       nzComponentParams: {
         data: {},
-        isAddNew: true
+        isAddNew: true,
+        selectedLanguage: this.pagingParams.languageId
       }
     });
 
@@ -105,31 +121,31 @@ export class ProductCategoryComponent implements OnInit {
   }
 
   update(data: User) {
-    // this.productCategoryService.getById(data.id)
-    //   .subscribe((res: User) => {
-    //     const modal = this.modalService.create({
-    //       nzTitle: 'Cập nhật loại sản phẩm',
-    //       nzContent: ProductCategoryAddEditModalComponent,
-    //       nzStyle: {
-    //         top: SystemConstant.MODAL_TOP
-    //       },
-    //       nzBodyStyle: {
-    //         padding: SystemConstant.MODAL_BODY_PADDING
-    //       },
-    //       nzMaskClosable: false,
-    //       nzClosable: true,
-    //       nzComponentParams: {
-    //         data: res,
-    //         isAddNew: false
-    //       }
-    //     });
+    this.productCategoryService.getById(data.id, this.pagingParams.languageId)
+      .subscribe((res: User) => {
+        const modal = this.modalService.create({
+          nzTitle: 'Cập nhật loại sản phẩm',
+          nzContent: ProductCategoryAddEditModalComponent,
+          nzStyle: {
+            top: SystemConstant.MODAL_TOP
+          },
+          nzBodyStyle: {
+            padding: SystemConstant.MODAL_BODY_PADDING
+          },
+          nzMaskClosable: false,
+          nzClosable: true,
+          nzComponentParams: {
+            data: res,
+            isAddNew: false
+          }
+        });
 
-    //     modal.afterClose.subscribe((result: boolean) => {
-    //       if (result) {
-    //         this.loadData();
-    //       }
-    //     });
-    //   });
+        modal.afterClose.subscribe((result: boolean) => {
+          if (result) {
+            this.loadData();
+          }
+        });
+      });
   }
 
   delete(id: any) {
@@ -164,5 +180,10 @@ export class ProductCategoryComponent implements OnInit {
 
   contextMenu($event: MouseEvent, menu: NzDropdownMenuComponent): void {
     this.nzContextMenuService.create($event, menu);
+  }
+
+  changeLanguage(event: any) {
+    this.pagingParams.languageId = event;
+    this.loadData();
   }
 }

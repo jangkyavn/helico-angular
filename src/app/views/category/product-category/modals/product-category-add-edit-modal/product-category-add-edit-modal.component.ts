@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, HostListener } from '@angular/core';
 import { ProductCategoryService } from 'src/app/shared/services/product-category.service';
-import { UtilityService } from 'src/app/shared/services/utility.service';
 import { MessageService } from 'src/app/shared/services/message.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzModalRef } from 'ng-zorro-antd';
@@ -8,6 +7,7 @@ import { LanguageService } from 'src/app/shared/services/language.service';
 import { forkJoin } from 'rxjs';
 import { MessageConstant } from 'src/app/shared/constants/message.constant';
 import { makeSeoAlias } from 'src/app/shared/functions/utilities.function';
+import { DataService } from 'src/app/shared/services/data.service';
 
 @Component({
   selector: 'app-product-category-add-edit-modal',
@@ -17,6 +17,7 @@ import { makeSeoAlias } from 'src/app/shared/functions/utilities.function';
 export class ProductCategoryAddEditModalComponent implements OnInit {
   @Input() data: any;
   @Input() isAddNew: boolean;
+  @Input() selectedLanguage: string;
   spinning: boolean;
   productCategoryForm: FormGroup;
   loadingSaveChanges: boolean;
@@ -34,7 +35,7 @@ export class ProductCategoryAddEditModalComponent implements OnInit {
     private modal: NzModalRef,
     private productCategoryService: ProductCategoryService,
     private languageService: LanguageService,
-    private utilityService: UtilityService,
+    private dataService: DataService,
     private messageService: MessageService,
   ) { }
 
@@ -49,13 +50,12 @@ export class ProductCategoryAddEditModalComponent implements OnInit {
       if (this.isAddNew) {
         this.productCategoryForm.patchValue({
           ...this.data,
-          languageId: this.languages.filter(x => x.isDefault === true)[0].id,
+          languageId: this.selectedLanguage,
           status: this.isAddNew ? true : this.data.status
         });
       } else {
         this.productCategoryForm.patchValue({
-          ...this.data,
-          languageId: this.languages.filter(x => x.isDefault === true)[0].id
+          ...this.data
         });
       }
 
@@ -106,7 +106,9 @@ export class ProductCategoryAddEditModalComponent implements OnInit {
           this.messageService.success(MessageConstant.CREATED_OK_MSG);
           this.loadingSaveChanges = false;
           this.productCategoryForm.markAsPristine();
-          // this.modal.destroy(true);
+          this.isAddNew = false;
+          this.data = res;
+          this.dataService.loadData(true);
         }
 
         this.loadingSaveChanges = false;
@@ -119,7 +121,7 @@ export class ProductCategoryAddEditModalComponent implements OnInit {
           this.messageService.success(MessageConstant.UPDATED_OK_MSG);
           this.loadingSaveChanges = false;
           this.productCategoryForm.markAsPristine();
-          // this.modal.destroy(true);
+          this.dataService.loadData(true);
         }
 
         this.loadingSaveChanges = false;
@@ -130,9 +132,33 @@ export class ProductCategoryAddEditModalComponent implements OnInit {
   }
 
   changeTenLoai(input: any) {
+    console.log(input);
     this.productCategoryForm.patchValue({
       seoAlias: makeSeoAlias(input)
     });
+  }
+
+  changeLanguage(event: any) {
+    console.log('aaa');
+    this.productCategoryForm.markAsPristine();
+    if (this.isAddNew === false) {
+      this.productCategoryService.getById(this.data.id, event)
+        .subscribe((res: any) => {
+          this.productCategoryForm.patchValue({
+            id: res.id,
+            position: res.position,
+            name: res.name,
+            seoPageTitle: res.seoPageTitle,
+            seoAlias: res.seoAlias,
+            seoKeywords: res.seoKeywords,
+            seoDescription: res.seoDescription,
+            createdDate: res.createdDate,
+            createdBy: res.createdBy,
+            status: res.status
+          });
+          this.productCategoryForm.markAsPristine();
+        });
+    }
   }
 
   destroyModal() {

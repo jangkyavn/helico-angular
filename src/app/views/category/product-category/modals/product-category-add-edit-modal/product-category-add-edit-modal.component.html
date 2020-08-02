@@ -3,7 +3,7 @@
     <nz-form-item>
       <nz-form-label [nzSm]="7" [nzXs]="24" nzFor="languageId">Ngôn ngữ</nz-form-label>
       <nz-form-control [nzSm]="17" [nzXs]="24">
-        <nz-select formControlName="languageId" id="languageId">
+        <nz-select [nzDisabled]="productCategoryForm.dirty" formControlName="languageId" id="languageId" (ngModelChange)="changeLanguage($event)">
           <nz-option *ngFor="let item of languages" [nzValue]="item.id" [nzLabel]="item.name"></nz-option>
         </nz-select>
       </nz-form-control>
@@ -11,7 +11,7 @@
     <nz-form-item>
       <nz-form-label [nzSm]="7" [nzXs]="24" nzRequired nzFor="name">Tên loại</nz-form-label>
       <nz-form-control [nzSm]="17" [nzXs]="24" nzErrorTip="Vui lòng nhập tên loại sản phẩm.">
-        <input type="text" nz-input formControlName="name" id="name" (ngModelChange)="changeTenLoai($event)" />
+        <input type="text" nz-input formControlName="name" id="name" (keyup)="changeTenLoai($event.target.value)" />
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
