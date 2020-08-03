@@ -9,7 +9,7 @@ import { AuthService } from 'src/app/shared/services/auth.service';
 import { EnumModel } from 'src/app/shared/models/enum.model';
 import { RoleService } from 'src/app/shared/services/role.service';
 import { Role } from 'src/app/shared/models/role.model';
-import { UtilityService } from 'src/app/shared/services/utility.service';
+import { getFormatedInputDate } from 'src/app/shared/functions/utilities.function';
 
 @Component({
   selector: 'app-account-edit',
@@ -34,7 +34,6 @@ export class AccountEditComponent implements OnInit {
     private authService: AuthService,
     private userService: UserService,
     private roleService: RoleService,
-    private utilityService: UtilityService,
     private messageService: MessageService) { }
 
   ngOnInit() {
@@ -48,7 +47,7 @@ export class AccountEditComponent implements OnInit {
 
       this.accountForm.patchValue({
         ...data,
-        birthDay: this.utilityService.getFormatedInputDate(data.birthDay),
+        birthDay: getFormatedInputDate(data.birthDay),
         roleId: data.roles[0].id
       });
     });

@@ -9,7 +9,7 @@ import { RoleService } from 'src/app/shared/services/role.service';
 import { forkJoin } from 'rxjs';
 import { MessageConstant } from 'src/app/shared/constants/message.constant';
 import { EnumModel } from 'src/app/shared/models/enum.model';
-import { UtilityService } from 'src/app/shared/services/utility.service';
+import { getFormatedInputDate } from 'src/app/shared/functions/utilities.function';
 
 @Component({
   selector: 'app-user-add-edit-modal',
@@ -39,7 +39,6 @@ export class UserAddEditModalComponent implements OnInit {
     private modal: NzModalRef,
     private userService: UserService,
     private roleService: RoleService,
-    private utilityService: UtilityService,
     private messageService: MessageService,
   ) { }
 
@@ -54,7 +53,7 @@ export class UserAddEditModalComponent implements OnInit {
 
       this.userForm.patchValue({
         ...this.data,
-        birthDay: this.utilityService.getFormatedInputDate(this.data.birthDay),
+        birthDay: getFormatedInputDate(this.data.birthDay),
         roleId: this.isAddNew ? '' : this.data.roles[0].id,
         status: this.isAddNew ? false : this.data.status
       });

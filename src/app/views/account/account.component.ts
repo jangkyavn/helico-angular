@@ -8,6 +8,7 @@ import { FileService } from 'src/app/shared/services/file.service';
 import { MessageConstant } from 'src/app/shared/constants/message.constant';
 import { SystemConstant } from 'src/app/shared/constants/system.constant';
 import { DataService } from 'src/app/shared/services/data.service';
+import { checkExtension, checkFileSize } from 'src/app/shared/functions/utilities.function';
 
 @Component({
   selector: 'app-account',
@@ -31,7 +32,6 @@ export class AccountComponent implements OnInit {
     private messageService: MessageService,
     private uploadService: UploadService,
     private fileService: FileService,
-    private utilityService: UtilityService,
     private dataService: DataService
   ) { }
 
@@ -50,12 +50,12 @@ export class AccountComponent implements OnInit {
   importFile(event: any) {
     const files = event.target.files;
     if (files && files[0]) {
-      if (!this.utilityService.checkExtension(event.target.files[0].name, this.validFileExtensions)) {
+      if (!checkExtension(event.target.files[0].name, this.validFileExtensions)) {
         this.messageService.error('File không hợp lệ.');
         return;
       }
 
-      if (!this.utilityService.checkFileSize(event.target.files[0].size)) {
+      if (!checkFileSize(event.target.files[0].size)) {
         this.messageService.error('Dung lượng file vượt quá 2MB.');
         return;
       }
@@ -85,8 +85,9 @@ export class AccountComponent implements OnInit {
     if (this.authService.getUser()?.avatar) {
       this.fileService.getFile(SystemConstant.FOLDER_AVATAR + this.authService.getUser()?.avatar)
         .subscribe((res: any) => {
+          console.log(res);
           if (res) {
-            this.avatar = res;
+            this.avatar = res.changingThisBreaksApplicationSecurity;
           }
         });
     }

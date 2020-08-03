@@ -6,9 +6,10 @@ import { NzModalRef } from 'ng-zorro-antd';
 import { LanguageService } from 'src/app/shared/services/language.service';
 import { forkJoin } from 'rxjs';
 import { MessageConstant } from 'src/app/shared/constants/message.constant';
-import { makeSeoAlias } from 'src/app/shared/functions/utilities.function';
+import { makeSeoAlias, checkExtension, checkFileSize } from 'src/app/shared/functions/utilities.function';
 import { DataService } from 'src/app/shared/services/data.service';
 import { ProjectCategoryService } from 'src/app/shared/services/project-category.service';
+import { UploadService } from 'src/app/shared/services/upload.service';
 
 @Component({
   selector: 'app-project-add-edit-modal',
@@ -24,6 +25,13 @@ export class ProjectAddEditModalComponent implements OnInit {
   loadingSaveChanges: boolean;
   languages: any[] = [];
   projectCategories: any[] = [];
+  config: any = {
+    ///
+  };
+  files: any = [];
+  src: any;
+  formData = new FormData();
+  validFileExtensions = ['.jpg', '.jpeg', '.bmp', '.gif', '.png', '.JPG', '.JPGE', '.BMP', '.GIF', '.PNG'];
 
   @HostListener('window:keydown', ['$event'])
   onKeyPress($event: KeyboardEvent) {
@@ -39,6 +47,7 @@ export class ProjectAddEditModalComponent implements OnInit {
     private projectCategoryService: ProjectCategoryService,
     private languageService: LanguageService,
     private dataService: DataService,
+    private uploadService: UploadService,
     private messageService: MessageService,
   ) { }
 
@@ -62,6 +71,7 @@ export class ProjectAddEditModalComponent implements OnInit {
         this.projectForm.patchValue({
           ...this.data
         });
+        this.src = this.data.imageBase64;
       }
 
       this.spinning = false;
@@ -79,6 +89,8 @@ export class ProjectAddEditModalComponent implements OnInit {
     this.projectForm = this.fb.group({
       id: [null],
       categoryId: [null, [Validators.required]],
+      image: [null],
+      imageName: [null, [Validators.required]],
       languageId: [null],
       name: [null, [Validators.required]],
       description: [null],
@@ -108,21 +120,27 @@ export class ProjectAddEditModalComponent implements OnInit {
     }
 
     const data = this.projectForm.getRawValue();
-    if (this.isAddNew) {
-      this.projectService.create(data).subscribe((res: any) => {
-        if (res) {
-          this.messageService.success(MessageConstant.CREATED_OK_MSG);
-          this.loadingSaveChanges = false;
-          this.projectForm.markAsPristine();
-          this.isAddNew = false;
-          this.data = res;
-          this.dataService.loadData(true);
-        }
 
-        this.loadingSaveChanges = false;
-      }, _ => {
-        this.loadingSaveChanges = false;
-      });
+    if (this.isAddNew) {
+      this.uploadService.uploadFile(this.formData, 'images', 'projects')
+        .subscribe(resFile => {
+          data.image = resFile.fileName;
+          this.projectService.create(data).subscribe((res: any) => {
+            if (res) {
+              this.messageService.success(MessageConstant.CREATED_OK_MSG);
+              this.loadingSaveChanges = false;
+              this.projectForm.markAsPristine();
+              this.isAddNew = false;
+              this.data = res;
+              this.dataService.loadData(true);
+            }
+            this.loadingSaveChanges = false;
+          }, _ => {
+            this.loadingSaveChanges = false;
+          });
+        }, _ => {
+          this.loadingSaveChanges = false;
+        });
     } else {
       this.projectService.update(data).subscribe((res: any) => {
         if (res) {
@@ -180,6 +198,29 @@ export class ProjectAddEditModalComponent implements OnInit {
           this.projectCategories = res;
           this.spinning = false;
         });
+    }
+  }
+
+  uploadFile(files) {
+    if (files && files[0]) {
+      if (!checkExtension(files[0].name, this.validFileExtensions)) {
+        this.messageService.error('File không hợp lệ.');
+        return;
+      }
+
+      this.projectForm.patchValue({
+        imageName: files[0].name
+      });
+      this.formData.delete('file');
+      this.formData.append('file', files[0]);
+
+      const reader = new FileReader();
+
+      reader.onload = (event: ProgressEvent) => {
+        this.src = (event.target as FileReader).result;
+      };
+
+      reader.readAsDataURL(files[0]);
     }
   }
 

@@ -1,3 +1,5 @@
+import * as moment from 'moment';
+
 export function makeSeoAlias(input: string) {
     if (input === undefined || input === '') {
         return '';
@@ -28,4 +30,37 @@ export function makeSeoAlias(input: string) {
     slug = slug.replace(/\@\-|\-\@|\@/gi, '');
 
     return slug;
+}
+
+export function getFormatedInputDate(input: any = null) {
+    if (input) {
+        return moment(input).format('YYYY-MM-DD');
+    } else {
+        return moment().format('YYYY-MM-DD');
+    }
+}
+
+export function getFormatedViewDate(input: any = null) {
+    if (input) {
+        return moment(input).format('DD/MM/YYYY');
+    } else {
+        return moment().format('DD/MM/YYYY');
+    }
+}
+
+export function getFormatedViewDateTime(input: any = null) {
+    if (input) {
+        return moment(input).format('DD/MM/YYYY HH:mm:ss');
+    } else {
+        return moment().format('DD/MM/YYYY HH:mm:ss');
+    }
+}
+
+export function checkExtension(fileName: string, extentions: any) {
+    return (new RegExp('(' + extentions.join('|').replace(/\./g, '\\.') + ')$')).test(fileName);
+}
+
+export function checkFileSize(fileSize: any) {
+    if ((fileSize / 1024 / 1024) < 2048) { return true; }
+    return false;
 }

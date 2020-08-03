@@ -23,18 +23,24 @@
     <thead>
       <tr>
         <th style="width: 5%">STT</th>
-        <th style="width: 30%">Tên dự án</th>
-        <th style="width: 25%">Loại dự án</th>
+        <th style="width: 10%">Ảnh đại diện</th>
+        <th style="width: 25%">Tên dự án</th>
+        <th style="width: 20%">Loại dự án</th>
         <th style="width: 40%">Mô tả</th>
       </tr>
     </thead>
     <tbody class="cursor-row">
       <tr *ngFor="let data of listOfData; let i=index" (contextmenu)="contextMenu($event, menu)"
         (dblclick)="update(data)">
-        <td>{{i + 1}}</td>
+        <td>{{(i * pagination.itemsPerPage) + (i + 1)}}</td>
+        <td>
+          <img [src]="data?.imageBase64" width="100px" />
+        </td>
         <td>{{ data?.name }}</td>
         <td>{{ data?.categoryName }}</td>
-        <td>{{ data?.description }}</td>
+        <td>
+          <div [innerHTML]="data?.description"></div>
+        </td>
         <nz-dropdown-menu #menu="nzDropdownMenu">
           <ul nz-menu>
             <li nz-menu-item (click)="update(data)">

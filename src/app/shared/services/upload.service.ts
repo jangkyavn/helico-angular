@@ -14,9 +14,10 @@ export class UploadService {
         private http: HttpClient,
         private env: EnvService) { }
 
-    uploadFile(data: FormData, folderType: string, folderName: string): Observable<FileReponse> {
+    uploadFile(data: FormData, folderType: string, folderName: string, fileName: string = ''): Observable<FileReponse> {
         data.append('folderType', folderType);
         data.append('folderName', folderName);
+        data.append('fileName', fileName);
         return this.http.post(this.baseUrl, data);
     }
 }

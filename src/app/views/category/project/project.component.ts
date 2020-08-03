@@ -24,7 +24,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
   languages: any[] = [];
   pagination: Pagination = {
     currentPage: 1,
-    itemsPerPage: -1
+    itemsPerPage: 10
   };
   loadDataSub: Subscription;
   pagingParams: PagingParams = {
@@ -73,10 +73,12 @@ export class ProjectComponent implements OnInit, OnDestroy {
       this.pagination.currentPage || 1,
       this.pagination.itemsPerPage || SystemConstant.PAGE_SIZE,
       this.pagingParams)
-      .subscribe((res: PaginatedResult<User[]>) => {
+      .subscribe((res: PaginatedResult<any[]>) => {
         this.loading = false;
         this.pagination = res.pagination;
         this.listOfData = res.result;
+
+        console.log(res.result[0].imageBase64);
 
         if (this.listOfData.length === 0 && this.pagination.currentPage !== 1) {
           this.pagination.currentPage -= 1;
@@ -103,6 +105,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
       nzBodyStyle: {
         padding: SystemConstant.MODAL_BODY_PADDING
       },
+      nzWidth: 1200,
       nzMaskClosable: false,
       nzClosable: true,
       nzComponentParams: {
@@ -131,6 +134,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
           nzBodyStyle: {
             padding: SystemConstant.MODAL_BODY_PADDING
           },
+          nzWidth: 1200,
           nzMaskClosable: false,
           nzClosable: true,
           nzComponentParams: {
