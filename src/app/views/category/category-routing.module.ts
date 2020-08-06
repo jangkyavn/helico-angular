@@ -13,6 +13,10 @@ const routes: Routes = [
                 loadChildren: () => import('./product-category/product-category.module').then(m => m.ProductCategoryModule)
             },
             {
+                path: 'san-pham',
+                loadChildren: () => import('./product/product.module').then(m => m.ProductModule)
+            },
+            {
                 path: 'loai-du-an',
                 loadChildren: () => import('./project-category/project-category.module').then(m => m.ProjectCategoryModule)
             },

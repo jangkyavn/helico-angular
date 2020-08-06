@@ -4,7 +4,6 @@ import { Pagination, PaginatedResult } from 'src/app/shared/models/pagination.mo
 import { PagingParams } from 'src/app/shared/heplers/paging.param';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MessageService } from 'src/app/shared/services/message.service';
-import { User } from 'src/app/shared/models/user.model';
 import { MessageConstant } from 'src/app/shared/constants/message.constant';
 import { SystemConstant } from 'src/app/shared/constants/system.constant';
 import { ProductCategoryAddEditModalComponent } from './modals/product-category-add-edit-modal/product-category-add-edit-modal.component';
@@ -74,7 +73,7 @@ export class ProductCategoryComponent implements OnInit, OnDestroy {
       this.pagination.currentPage || 1,
       this.pagination.itemsPerPage || SystemConstant.PAGE_SIZE,
       this.pagingParams)
-      .subscribe((res: PaginatedResult<User[]>) => {
+      .subscribe((res: PaginatedResult<any[]>) => {
         this.loading = false;
         this.pagination = res.pagination;
         this.listOfData = res.result;
@@ -120,9 +119,9 @@ export class ProductCategoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  update(data: User) {
+  update(data: any) {
     this.productCategoryService.getById(data.id, this.pagingParams.languageId)
-      .subscribe((res: User) => {
+      .subscribe((res: any) => {
         const modal = this.modalService.create({
           nzTitle: 'Cập nhật loại sản phẩm',
           nzContent: ProductCategoryAddEditModalComponent,
@@ -161,9 +160,9 @@ export class ProductCategoryComponent implements OnInit, OnDestroy {
 
   onQueryParamsChange(params: NzTableQueryParams) {
     if (this.isFirstLoad) {
+      this.isFirstLoad = false;
       return;
     }
-    this.isFirstLoad = false;
     const { pageSize, pageIndex, sort } = params;
     const currentSort = sort.find(item => item.value !== null);
     this.pagingParams.sortKey = (currentSort && currentSort.key) || '';

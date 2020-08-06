@@ -5,18 +5,18 @@ import { PagingParams } from 'src/app/shared/heplers/paging.param';
 import { MessageService } from 'src/app/shared/services/message.service';
 import { MessageConstant } from 'src/app/shared/constants/message.constant';
 import { SystemConstant } from 'src/app/shared/constants/system.constant';
-import { ProjectAddEditModalComponent } from './modals/project-add-edit-modal/project-add-edit-modal.component';
-import { ProjectService } from 'src/app/shared/services/project.service';
+import { ProductAddEditModalComponent } from './modals/product-add-edit-modal/product-add-edit-modal.component';
+import { ProductService } from 'src/app/shared/services/product.service';
 import { LanguageService } from 'src/app/shared/services/language.service';
 import { Subscription } from 'rxjs';
 import { DataService } from 'src/app/shared/services/data.service';
 
 @Component({
-  selector: 'app-project',
-  templateUrl: './project.component.html',
-  styleUrls: ['./project.component.scss']
+  selector: 'app-product',
+  templateUrl: './product.component.html',
+  styleUrls: ['./product.component.scss']
 })
-export class ProjectComponent implements OnInit, OnDestroy {
+export class ProductComponent implements OnInit, OnDestroy {
   listOfData: any[] = [];
   loading = false;
   isFirstLoad = true;
@@ -38,7 +38,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
   constructor(
     private modalService: NzModalService,
     private nzContextMenuService: NzContextMenuService,
-    private projectService: ProjectService,
+    private productService: ProductService,
     private messageService: MessageService,
     private languageService: LanguageService,
     private dataService: DataService
@@ -69,7 +69,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
       this.pagination.currentPage = 1;
     }
     this.loading = true;
-    this.projectService.getAllPaging(
+    this.productService.getAllPaging(
       this.pagination.currentPage || 1,
       this.pagination.itemsPerPage || SystemConstant.PAGE_SIZE,
       this.pagingParams)
@@ -95,8 +95,8 @@ export class ProjectComponent implements OnInit, OnDestroy {
 
   create() {
     const modal = this.modalService.create({
-      nzTitle: 'Thêm mới dự án',
-      nzContent: ProjectAddEditModalComponent,
+      nzTitle: 'Thêm mới sản phẩm',
+      nzContent: ProductAddEditModalComponent,
       nzStyle: {
         top: SystemConstant.MODAL_TOP
       },
@@ -121,11 +121,11 @@ export class ProjectComponent implements OnInit, OnDestroy {
   }
 
   update(data: any) {
-    this.projectService.getById(data.id, this.pagingParams.languageId)
+    this.productService.getById(data.id, this.pagingParams.languageId)
       .subscribe((res: any) => {
         const modal = this.modalService.create({
-          nzTitle: 'Cập nhật dự án',
-          nzContent: ProjectAddEditModalComponent,
+          nzTitle: 'Cập nhật sản phẩm',
+          nzContent: ProductAddEditModalComponent,
           nzStyle: {
             top: SystemConstant.MODAL_TOP
           },
@@ -152,7 +152,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
 
   delete(id: any) {
     this.messageService.confirm(MessageConstant.CONFIRM_DELETE_MSG, () => {
-      this.projectService.delete(id).subscribe((res: boolean) => {
+      this.productService.delete(id).subscribe((res: boolean) => {
         if (res) {
           this.messageService.success(MessageConstant.DELETED_OK_MSG);
           this.loadData();

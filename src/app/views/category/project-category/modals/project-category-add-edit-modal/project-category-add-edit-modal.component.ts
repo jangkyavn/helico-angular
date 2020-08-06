@@ -108,6 +108,13 @@ export class ProjectCategoryAddEditModalComponent implements OnInit {
           this.projectCategoryForm.markAsPristine();
           this.isAddNew = false;
           this.data = res;
+          this.projectCategoryForm.patchValue({
+            ...data,
+            id: res.id,
+            position: res.position,
+            createdDate: res.createdDate,
+            createdBy: res.createdBy
+          });
           this.dataService.loadData(true);
         }
 

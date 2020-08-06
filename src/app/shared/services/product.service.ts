@@ -10,8 +10,8 @@ import { PaginatedResult } from '../models/pagination.model';
 @Injectable({
     providedIn: 'root'
 })
-export class ProjectService {
-    baseUrl = this.env.apiUrl + '/api/Project/';
+export class ProductService {
+    baseUrl = this.env.apiUrl + '/api/Product/';
 
     constructor(
         private http: HttpClient,

@@ -17,8 +17,8 @@ export class ProductCategoryService {
         private http: HttpClient,
         private env: EnvService) { }
 
-    getAll() {
-        return this.http.get(this.baseUrl);
+    getAll(languageId: string) {
+        return this.http.get(this.baseUrl + languageId);
     }
 
     getAllPaging(page?: any, itemsPerPage?: any, pagingParams?: PagingParams): Observable<PaginatedResult<any[]>> {

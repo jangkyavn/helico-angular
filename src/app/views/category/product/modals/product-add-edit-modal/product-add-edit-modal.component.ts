@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, HostListener } from '@angular/core';
-import { ProjectService } from 'src/app/shared/services/project.service';
+import { ProductService } from 'src/app/shared/services/product.service';
 import { MessageService } from 'src/app/shared/services/message.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzModalRef } from 'ng-zorro-antd';
@@ -8,23 +8,23 @@ import { forkJoin } from 'rxjs';
 import { MessageConstant } from 'src/app/shared/constants/message.constant';
 import { makeSeoAlias, checkExtension, checkFileSize } from 'src/app/shared/functions/utilities.function';
 import { DataService } from 'src/app/shared/services/data.service';
-import { ProjectCategoryService } from 'src/app/shared/services/project-category.service';
+import { ProductCategoryService } from 'src/app/shared/services/product-category.service';
 import { UploadService } from 'src/app/shared/services/upload.service';
 
 @Component({
-  selector: 'app-project-add-edit-modal',
-  templateUrl: './project-add-edit-modal.component.html',
-  styleUrls: ['./project-add-edit-modal.component.scss']
+  selector: 'app-product-add-edit-modal',
+  templateUrl: './product-add-edit-modal.component.html',
+  styleUrls: ['./product-add-edit-modal.component.scss']
 })
-export class ProjectAddEditModalComponent implements OnInit {
+export class ProductAddEditModalComponent implements OnInit {
   @Input() data: any;
   @Input() isAddNew: boolean;
   @Input() selectedLanguage: string;
   spinning: boolean;
-  projectForm: FormGroup;
+  productForm: FormGroup;
   loadingSaveChanges: boolean;
   languages: any[] = [];
-  projectCategories: any[] = [];
+  productCategories: any[] = [];
   config: any = {
     ///
   };
@@ -43,8 +43,8 @@ export class ProjectAddEditModalComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private modal: NzModalRef,
-    private projectService: ProjectService,
-    private projectCategoryService: ProjectCategoryService,
+    private productService: ProductService,
+    private productCategoryService: ProductCategoryService,
     private languageService: LanguageService,
     private dataService: DataService,
     private uploadService: UploadService,
@@ -53,22 +53,22 @@ export class ProjectAddEditModalComponent implements OnInit {
 
   ngOnInit() {
     this.createForm();
-    this.projectForm.reset();
+    this.productForm.reset();
 
     this.spinning = true;
     this.forkJoin().subscribe((res: any) => {
       this.languages = res[0];
-      this.projectCategories = res[1];
+      this.productCategories = res[1];
       console.log(res[1]);
 
       if (this.isAddNew) {
-        this.projectForm.patchValue({
+        this.productForm.patchValue({
           ...this.data,
           languageId: this.selectedLanguage,
           status: this.isAddNew ? true : this.data.status
         });
       } else {
-        this.projectForm.patchValue({
+        this.productForm.patchValue({
           ...this.data
         });
         this.src = this.data.imageBase64;
@@ -81,20 +81,20 @@ export class ProjectAddEditModalComponent implements OnInit {
   forkJoin() {
     return forkJoin([
       this.languageService.getAll(),
-      this.projectCategoryService.getAll(this.selectedLanguage)
+      this.productCategoryService.getAll(this.selectedLanguage)
     ]);
   }
 
   createForm() {
-    this.projectForm = this.fb.group({
+    this.productForm = this.fb.group({
       id: [null],
       categoryId: [null, [Validators.required]],
       image: [null],
       imageName: [null, [Validators.required]],
       languageId: [null],
       name: [null, [Validators.required]],
-      description: [null],
-      content: [null],
+      shortDescription: [null],
+      detailedDescription: [null],
       seoPageTitle: [null, [Validators.required]],
       seoAlias: [null, [Validators.required]],
       seoKeywords: [null],
@@ -108,31 +108,31 @@ export class ProjectAddEditModalComponent implements OnInit {
   saveChanges() {
     this.loadingSaveChanges = true;
 
-    if (this.projectForm.invalid) {
+    if (this.productForm.invalid) {
       // tslint:disable-next-line:forin
-      for (const i in this.projectForm.controls) {
-        this.projectForm.controls[i].markAsDirty();
-        this.projectForm.controls[i].updateValueAndValidity();
+      for (const i in this.productForm.controls) {
+        this.productForm.controls[i].markAsDirty();
+        this.productForm.controls[i].updateValueAndValidity();
       }
 
       this.loadingSaveChanges = false;
       return;
     }
 
-    const data = this.projectForm.getRawValue();
+    const data = this.productForm.getRawValue();
 
     if (this.isAddNew) {
-      this.uploadService.uploadFile(this.formData, 'images', 'projects')
+      this.uploadService.uploadFile(this.formData, 'images', 'products')
         .subscribe((resFile: any) => {
           data.image = resFile.fileName;
-          this.projectService.create(data).subscribe((res: any) => {
+          this.productService.create(data).subscribe((res: any) => {
             if (res) {
               this.messageService.success(MessageConstant.CREATED_OK_MSG);
               this.loadingSaveChanges = false;
-              this.projectForm.markAsPristine();
+              this.productForm.markAsPristine();
               this.isAddNew = false;
               this.data = res;
-              this.projectForm.patchValue({
+              this.productForm.patchValue({
                 ...data,
                 id: res.id,
                 createdDate: res.createdDate,
@@ -148,17 +148,17 @@ export class ProjectAddEditModalComponent implements OnInit {
           this.loadingSaveChanges = false;
         });
     } else {
-      this.uploadService.uploadFile(this.formData, 'images', 'projects', data.image)
+      this.uploadService.uploadFile(this.formData, 'images', 'products', data.image)
         .subscribe((resFile: any) => {
           if (resFile.fileName) {
             data.image = resFile.fileName;
           }
 
-          this.projectService.update(data).subscribe((res: any) => {
+          this.productService.update(data).subscribe((res: any) => {
             if (res) {
               this.messageService.success(MessageConstant.UPDATED_OK_MSG);
               this.loadingSaveChanges = false;
-              this.projectForm.markAsPristine();
+              this.productForm.markAsPristine();
               this.dataService.loadData(true);
             }
             this.loadingSaveChanges = false;
@@ -171,29 +171,29 @@ export class ProjectAddEditModalComponent implements OnInit {
 
   changeName(input: any) {
     console.log(input);
-    this.projectForm.patchValue({
+    this.productForm.patchValue({
       seoAlias: makeSeoAlias(input)
     });
   }
 
   changeLanguage(event: any) {
     this.spinning = true;
-    this.projectForm.markAsPristine();
+    this.productForm.markAsPristine();
     if (this.isAddNew === false) {
       forkJoin([
-        this.projectService.getById(this.data.id, event),
-        this.projectCategoryService.getAll(event)
+        this.productService.getById(this.data.id, event),
+        this.productCategoryService.getAll(event)
       ]).subscribe((res: any) => {
         const getById = res[0];
-        this.projectCategories = res[1];
+        this.productCategories = res[1];
 
-        this.projectForm.patchValue({
+        this.productForm.patchValue({
           id: getById.id,
           categoryId: getById.categoryId,
           image: getById.image,
           name: getById.name,
-          description: getById.description,
-          content: getById.content,
+          shortDescription: getById.shortDescription,
+          detailedDescription: getById.detailedDescription,
           seoPageTitle: getById.seoPageTitle,
           seoAlias: getById.seoAlias,
           seoKeywords: getById.seoKeywords,
@@ -202,13 +202,13 @@ export class ProjectAddEditModalComponent implements OnInit {
           createdBy: getById.createdBy,
           status: getById.status
         });
-        this.projectForm.markAsPristine();
+        this.productForm.markAsPristine();
         this.spinning = false;
       });
     } else {
-      this.projectCategoryService.getAll(event)
+      this.productCategoryService.getAll(event)
         .subscribe((res: any[]) => {
-          this.projectCategories = res;
+          this.productCategories = res;
           this.spinning = false;
         });
     }
@@ -221,10 +221,10 @@ export class ProjectAddEditModalComponent implements OnInit {
         return;
       }
 
-      this.projectForm.patchValue({
+      this.productForm.patchValue({
         imageName: files[0].name
       });
-      this.projectForm.markAsDirty();
+      this.productForm.markAsDirty();
       this.formData.delete('file');
       this.formData.append('file', files[0]);
 

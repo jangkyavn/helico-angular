@@ -108,6 +108,13 @@ export class ProductCategoryAddEditModalComponent implements OnInit {
           this.productCategoryForm.markAsPristine();
           this.isAddNew = false;
           this.data = res;
+          this.productCategoryForm.patchValue({
+            ...data,
+            id: res.id,
+            position: res.position,
+            createdDate: res.createdDate,
+            createdBy: res.createdBy
+          });
           this.dataService.loadData(true);
         }
 

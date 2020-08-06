@@ -4,7 +4,6 @@ import { ProjectRoutingModule } from './project-routing.module';
 import { CKEditorModule } from 'ckeditor4-angular';
 import { SharedModule } from 'src/app/shared/modules/shared.module';
 import { ProjectAddEditModalComponent } from './modals/project-add-edit-modal/project-add-edit-modal.component';
-import { DragDropDirective } from 'src/app/shared/directives/drag-drop.directive';
 
 const APP_MODALS = [
   ProjectAddEditModalComponent
@@ -18,7 +17,6 @@ const APP_MODALS = [
   ],
   declarations: [
     ProjectComponent,
-    DragDropDirective,
     APP_MODALS
   ],
   entryComponents: [APP_MODALS]

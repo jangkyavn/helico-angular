@@ -131,9 +131,9 @@ export class UsersComponent implements OnInit {
 
   onQueryParamsChange(params: NzTableQueryParams) {
     if (this.isFirstLoad) {
+      this.isFirstLoad = false;
       return;
     }
-    this.isFirstLoad = false;
     const { pageSize, pageIndex, sort } = params;
     const currentSort = sort.find(item => item.value !== null);
     this.pagingParams.sortKey = (currentSort && currentSort.key) || '';
