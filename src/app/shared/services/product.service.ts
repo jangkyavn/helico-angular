@@ -50,8 +50,8 @@ export class ProductService {
             );
     }
 
-    getById(id: any, languageId: string) {
-        return this.http.get(this.baseUrl + id + '/' + languageId);
+    getById(id: any) {
+        return this.http.get(this.baseUrl + id);
     }
 
     create(data: any) {

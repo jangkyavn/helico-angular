@@ -3,10 +3,9 @@ import { ProductService } from 'src/app/shared/services/product.service';
 import { MessageService } from 'src/app/shared/services/message.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzModalRef } from 'ng-zorro-antd';
-import { LanguageService } from 'src/app/shared/services/language.service';
 import { forkJoin } from 'rxjs';
 import { MessageConstant } from 'src/app/shared/constants/message.constant';
-import { makeSeoAlias, checkExtension, checkFileSize } from 'src/app/shared/functions/utilities.function';
+import { checkExtension } from 'src/app/shared/functions/utilities.function';
 import { DataService } from 'src/app/shared/services/data.service';
 import { ProductCategoryService } from 'src/app/shared/services/product-category.service';
 import { UploadService } from 'src/app/shared/services/upload.service';
@@ -23,7 +22,6 @@ export class ProductAddEditModalComponent implements OnInit {
   spinning: boolean;
   productForm: FormGroup;
   loadingSaveChanges: boolean;
-  languages: any[] = [];
   productCategories: any[] = [];
   config: any = {
     ///
@@ -45,7 +43,6 @@ export class ProductAddEditModalComponent implements OnInit {
     private modal: NzModalRef,
     private productService: ProductService,
     private productCategoryService: ProductCategoryService,
-    private languageService: LanguageService,
     private dataService: DataService,
     private uploadService: UploadService,
     private messageService: MessageService,
@@ -57,14 +54,12 @@ export class ProductAddEditModalComponent implements OnInit {
 
     this.spinning = true;
     this.forkJoin().subscribe((res: any) => {
-      this.languages = res[0];
-      this.productCategories = res[1];
-      console.log(res[1]);
-
+      this.productCategories = res[0];
       if (this.isAddNew) {
         this.productForm.patchValue({
           ...this.data,
-          languageId: this.selectedLanguage,
+          price: 0,
+          quantity: 0,
           status: this.isAddNew ? true : this.data.status
         });
       } else {
@@ -80,8 +75,7 @@ export class ProductAddEditModalComponent implements OnInit {
 
   forkJoin() {
     return forkJoin([
-      this.languageService.getAll(),
-      this.productCategoryService.getAll(this.selectedLanguage)
+      this.productCategoryService.getAll()
     ]);
   }
 
@@ -91,14 +85,15 @@ export class ProductAddEditModalComponent implements OnInit {
       categoryId: [null, [Validators.required]],
       image: [null],
       imageName: [null, [Validators.required]],
-      languageId: [null],
-      name: [null, [Validators.required]],
-      shortDescription: [null],
-      detailedDescription: [null],
-      seoPageTitle: [null, [Validators.required]],
-      seoAlias: [null, [Validators.required]],
-      seoKeywords: [null],
-      seoDescription: [null],
+      name_VN: [null, [Validators.required]],
+      name_EN: [null, [Validators.required]],
+      shortDescription_VN: [null],
+      shortDescription_EN: [null],
+      detailedDescription_VN: [null],
+      detailedDescription_EN: [null],
+      quantity: [null],
+      price: [null],
+      isHighlight: [null],
       createdDate: [null],
       createdBy: [null],
       status: [null]
@@ -165,51 +160,6 @@ export class ProductAddEditModalComponent implements OnInit {
           }, _ => {
             this.loadingSaveChanges = false;
           });
-        });
-    }
-  }
-
-  changeName(input: any) {
-    console.log(input);
-    this.productForm.patchValue({
-      seoAlias: makeSeoAlias(input)
-    });
-  }
-
-  changeLanguage(event: any) {
-    this.spinning = true;
-    this.productForm.markAsPristine();
-    if (this.isAddNew === false) {
-      forkJoin([
-        this.productService.getById(this.data.id, event),
-        this.productCategoryService.getAll(event)
-      ]).subscribe((res: any) => {
-        const getById = res[0];
-        this.productCategories = res[1];
-
-        this.productForm.patchValue({
-          id: getById.id,
-          categoryId: getById.categoryId,
-          image: getById.image,
-          name: getById.name,
-          shortDescription: getById.shortDescription,
-          detailedDescription: getById.detailedDescription,
-          seoPageTitle: getById.seoPageTitle,
-          seoAlias: getById.seoAlias,
-          seoKeywords: getById.seoKeywords,
-          seoDescription: getById.seoDescription,
-          createdDate: getById.createdDate,
-          createdBy: getById.createdBy,
-          status: getById.status
-        });
-        this.productForm.markAsPristine();
-        this.spinning = false;
-      });
-    } else {
-      this.productCategoryService.getAll(event)
-        .subscribe((res: any[]) => {
-          this.productCategories = res;
-          this.spinning = false;
         });
     }
   }

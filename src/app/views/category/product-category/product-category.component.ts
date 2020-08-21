@@ -8,7 +8,6 @@ import { MessageConstant } from 'src/app/shared/constants/message.constant';
 import { SystemConstant } from 'src/app/shared/constants/system.constant';
 import { ProductCategoryAddEditModalComponent } from './modals/product-category-add-edit-modal/product-category-add-edit-modal.component';
 import { ProductCategoryService } from 'src/app/shared/services/product-category.service';
-import { LanguageService } from 'src/app/shared/services/language.service';
 import { Subscription } from 'rxjs';
 import { DataService } from 'src/app/shared/services/data.service';
 
@@ -19,9 +18,8 @@ import { DataService } from 'src/app/shared/services/data.service';
 })
 export class ProductCategoryComponent implements OnInit, OnDestroy {
   listOfData: any[] = [];
-  loading = false;
+  loading: boolean;
   isFirstLoad = true;
-  languages: any[] = [];
   pagination: Pagination = {
     currentPage: 1,
     itemsPerPage: -1
@@ -41,16 +39,12 @@ export class ProductCategoryComponent implements OnInit, OnDestroy {
     private nzContextMenuService: NzContextMenuService,
     private productCategoryService: ProductCategoryService,
     private messageService: MessageService,
-    private languageService: LanguageService,
     private dataService: DataService
   ) { }
 
   ngOnInit() {
     this.loading = true;
-    this.getAllLanguages(() => {
-      this.pagingParams.languageId = this.languages.filter(x => x.isDefault === true)[0].id;
-      this.loadData();
-    });
+    this.loadData();
 
     this.loadDataSub = this.dataService.loadData$
       .subscribe((res: boolean) => {
@@ -85,14 +79,6 @@ export class ProductCategoryComponent implements OnInit, OnDestroy {
       });
   }
 
-  getAllLanguages(callback: () => any) {
-    this.languageService.getAll()
-      .subscribe((res: any[]) => {
-        this.languages = res;
-        callback();
-      });
-  }
-
   create() {
     const modal = this.modalService.create({
       nzTitle: 'Thêm mới loại sản phẩm',
@@ -107,8 +93,7 @@ export class ProductCategoryComponent implements OnInit, OnDestroy {
       nzClosable: true,
       nzComponentParams: {
         data: {},
-        isAddNew: true,
-        selectedLanguage: this.pagingParams.languageId
+        isAddNew: true
       }
     });
 
@@ -120,7 +105,7 @@ export class ProductCategoryComponent implements OnInit, OnDestroy {
   }
 
   update(data: any) {
-    this.productCategoryService.getById(data.id, this.pagingParams.languageId)
+    this.productCategoryService.getById(data.id)
       .subscribe((res: any) => {
         const modal = this.modalService.create({
           nzTitle: 'Cập nhật loại sản phẩm',
@@ -159,17 +144,18 @@ export class ProductCategoryComponent implements OnInit, OnDestroy {
   }
 
   onQueryParamsChange(params: NzTableQueryParams) {
-    if (this.isFirstLoad) {
-      this.isFirstLoad = false;
-      return;
-    }
-    const { pageSize, pageIndex, sort } = params;
-    const currentSort = sort.find(item => item.value !== null);
-    this.pagingParams.sortKey = (currentSort && currentSort.key) || '';
-    this.pagingParams.sortValue = (currentSort && currentSort.value) || '';
-    this.pagination.currentPage = pageIndex;
-    this.pagination.itemsPerPage = pageSize;
-    this.loadData();
+    // if (this.isFirstLoad) {
+    //   this.isFirstLoad = false;
+    //   return;
+    // }
+    // const { pageSize, pageIndex, sort } = params;
+    // const currentSort = sort.find(item => item.value !== null);
+    // this.pagingParams.sortKey = (currentSort && currentSort.key) || '';
+    // this.pagingParams.sortValue = (currentSort && currentSort.value) || '';
+    // this.pagination.currentPage = pageIndex;
+    // this.pagination.itemsPerPage = pageSize;
+    // console.log('aaa');
+    // this.loadData();
   }
 
   search(keyword: string) {
@@ -179,11 +165,6 @@ export class ProductCategoryComponent implements OnInit, OnDestroy {
 
   contextMenu($event: MouseEvent, menu: NzDropdownMenuComponent): void {
     this.nzContextMenuService.create($event, menu);
-  }
-
-  changeLanguage(event: any) {
-    this.pagingParams.languageId = event;
-    this.loadData();
   }
 
   drop(event: CdkDragDrop<string[]>): void {

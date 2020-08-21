@@ -3,10 +3,7 @@ import { ProjectCategoryService } from 'src/app/shared/services/project-category
 import { MessageService } from 'src/app/shared/services/message.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzModalRef } from 'ng-zorro-antd';
-import { LanguageService } from 'src/app/shared/services/language.service';
-import { forkJoin } from 'rxjs';
 import { MessageConstant } from 'src/app/shared/constants/message.constant';
-import { makeSeoAlias } from 'src/app/shared/functions/utilities.function';
 import { DataService } from 'src/app/shared/services/data.service';
 
 @Component({
@@ -17,11 +14,9 @@ import { DataService } from 'src/app/shared/services/data.service';
 export class ProjectCategoryAddEditModalComponent implements OnInit {
   @Input() data: any;
   @Input() isAddNew: boolean;
-  @Input() selectedLanguage: string;
   spinning: boolean;
   projectCategoryForm: FormGroup;
   loadingSaveChanges: boolean;
-  languages: any[] = [];
 
   @HostListener('window:keydown', ['$event'])
   onKeyPress($event: KeyboardEvent) {
@@ -34,7 +29,6 @@ export class ProjectCategoryAddEditModalComponent implements OnInit {
     private fb: FormBuilder,
     private modal: NzModalRef,
     private projectCategoryService: ProjectCategoryService,
-    private languageService: LanguageService,
     private dataService: DataService,
     private messageService: MessageService,
   ) { }
@@ -44,41 +38,26 @@ export class ProjectCategoryAddEditModalComponent implements OnInit {
     this.projectCategoryForm.reset();
 
     this.spinning = true;
-    this.forkJoin().subscribe((res: any) => {
-      this.languages = res[0];
+    if (this.isAddNew) {
+      this.projectCategoryForm.patchValue({
+        ...this.data,
+        status: this.isAddNew ? true : this.data.status
+      });
+    } else {
+      this.projectCategoryForm.patchValue({
+        ...this.data
+      });
+    }
 
-      if (this.isAddNew) {
-        this.projectCategoryForm.patchValue({
-          ...this.data,
-          languageId: this.selectedLanguage,
-          status: this.isAddNew ? true : this.data.status
-        });
-      } else {
-        this.projectCategoryForm.patchValue({
-          ...this.data
-        });
-      }
-
-      this.spinning = false;
-    });
-  }
-
-  forkJoin() {
-    return forkJoin([
-      this.languageService.getAll()
-    ]);
+    this.spinning = false;
   }
 
   createForm() {
     this.projectCategoryForm = this.fb.group({
       id: [null],
       position: [null],
-      languageId: [null],
-      name: [null, [Validators.required]],
-      seoPageTitle: [null, [Validators.required]],
-      seoAlias: [null, [Validators.required]],
-      seoKeywords: [null],
-      seoDescription: [null],
+      name_VN: [null, [Validators.required]],
+      name_EN: [null, [Validators.required]],
       createdDate: [null],
       createdBy: [null],
       status: [null]
@@ -135,37 +114,6 @@ export class ProjectCategoryAddEditModalComponent implements OnInit {
       }, _ => {
         this.loadingSaveChanges = false;
       });
-    }
-  }
-
-  changeName(input: any) {
-    console.log(input);
-    this.projectCategoryForm.patchValue({
-      seoAlias: makeSeoAlias(input)
-    });
-  }
-
-  changeLanguage(event: any) {
-    this.spinning = true;
-    this.projectCategoryForm.markAsPristine();
-    if (this.isAddNew === false) {
-      this.projectCategoryService.getById(this.data.id, event)
-        .subscribe((res: any) => {
-          this.projectCategoryForm.patchValue({
-            id: res.id,
-            position: res.position,
-            name: res.name,
-            seoPageTitle: res.seoPageTitle,
-            seoAlias: res.seoAlias,
-            seoKeywords: res.seoKeywords,
-            seoDescription: res.seoDescription,
-            createdDate: res.createdDate,
-            createdBy: res.createdBy,
-            status: res.status
-          });
-          this.projectCategoryForm.markAsPristine();
-          this.spinning = false;
-        });
     }
   }
 

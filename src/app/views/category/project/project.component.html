@@ -22,25 +22,41 @@
     (nzQueryParams)="onQueryParamsChange($event)">
     <thead>
       <tr>
-        <th style="width: 5%">STT</th>
-        <th style="width: 10%">Ảnh đại diện</th>
-        <th style="width: 25%">Tên dự án</th>
-        <th style="width: 20%">Loại dự án</th>
-        <th style="width: 40%">Mô tả</th>
+        <th [nzAlign]="'center'" style="width: 5%">STT</th>
+        <th [nzAlign]="'center'" style="width: 15%">Ảnh đại diện</th>
+        <th [nzAlign]="'center'" style="width: 24%">Tên dự án</th>
+        <th [nzAlign]="'center'" style="width: 20%">Loại dự án</th>
+        <th [nzAlign]="'center'" style="width: 12%">Trạng thái</th>
+        <th [nzAlign]="'center'" style="width: 12%">Nổi bật</th>
+        <th [nzAlign]="'center'" style="width: 12%">Người tạo</th>
       </tr>
     </thead>
     <tbody class="cursor-row">
       <tr *ngFor="let data of listOfData; let i=index" (contextmenu)="contextMenu($event, menu)"
         (dblclick)="update(data)">
-        <td>{{data?.stt}}</td>
-        <td>
+        <td [nzAlign]="'center'">{{data?.stt}}</td>
+        <td [nzAlign]="'center'">
           <img [src]="data?.imageBase64" width="100px" />
         </td>
-        <td>{{ data?.name }}</td>
-        <td>{{ data?.categoryName }}</td>
-        <td>
-          <div [innerHTML]="data?.description"></div>
+        <td>{{ data?.name_VN }}</td>
+        <td>{{ data?.categoryName_VN }}</td>
+        <td [nzAlign]="'center'">
+          <ng-container *ngIf="data?.status; else statusFalseTemp">
+            <i style="color:#52C41A; font-size: 18px;" nz-icon nzType="check-circle" nzTheme="fill"></i>
+          </ng-container>
+          <ng-template #statusFalseTemp>
+            <i style="color:#FF4D4F; font-size: 18px;" nz-icon nzType="close-circle" nzTheme="fill"></i>
+          </ng-template>
         </td>
+        <td [nzAlign]="'center'">
+          <ng-container *ngIf="data?.isHighlight; else isHighlightFalseTemp">
+            <i style="color:#52C41A; font-size: 18px;" nz-icon nzType="check-circle" nzTheme="fill"></i>
+          </ng-container>
+          <ng-template #isHighlightFalseTemp>
+            <i style="color:#FF4D4F; font-size: 18px;" nz-icon nzType="close-circle" nzTheme="fill"></i>
+          </ng-template>
+        </td>
+        <td>{{ data?.createdByName }}</td>
         <nz-dropdown-menu #menu="nzDropdownMenu">
           <ul nz-menu>
             <li nz-menu-item (click)="update(data)">
@@ -56,7 +72,7 @@
   </nz-table>
 </nz-card>
 <ng-template #extraTemplate>
-  <nz-select nzSize="small" [(ngModel)]="pagingParams.languageId" (ngModelChange)="changeLanguage($event)">
+  <!-- <nz-select nzSize="small" [(ngModel)]="pagingParams.languageId" (ngModelChange)="changeLanguage($event)">
     <nz-option *ngFor="let item of languages" [nzValue]="item.id" [nzLabel]="item.name"></nz-option>
-  </nz-select>
+  </nz-select> -->
 </ng-template>

@@ -29,8 +29,8 @@
     <tbody class="cursor-row" cdkDropList (cdkDropListDropped)="drop($event)">
       <tr *ngFor="let data of listOfData; let i=index" (contextmenu)="contextMenu($event, menu)" cdkDrag
         (dblclick)="update(data)">
-        <td>{{i + 1}}</td>
-        <td>{{ data?.name }}</td>
+        <td [nzAlign]="'center'">{{i + 1}}</td>
+        <td>{{ data?.name_VN }}</td>
         <nz-dropdown-menu #menu="nzDropdownMenu">
           <ul nz-menu>
             <li nz-menu-item (click)="update(data)">
@@ -46,7 +46,7 @@
   </nz-table>
 </nz-card>
 <ng-template #extraTemplate>
-  <nz-select nzSize="small" [(ngModel)]="pagingParams.languageId" (ngModelChange)="changeLanguage($event)">
+  <!-- <nz-select nzSize="small" [(ngModel)]="pagingParams.languageId" (ngModelChange)="changeLanguage($event)">
     <nz-option *ngFor="let item of languages" [nzValue]="item.id" [nzLabel]="item.name"></nz-option>
-  </nz-select>
+  </nz-select> -->
 </ng-template>

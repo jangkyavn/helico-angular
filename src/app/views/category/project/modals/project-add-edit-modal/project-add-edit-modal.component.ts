@@ -3,10 +3,9 @@ import { ProjectService } from 'src/app/shared/services/project.service';
 import { MessageService } from 'src/app/shared/services/message.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzModalRef } from 'ng-zorro-antd';
-import { LanguageService } from 'src/app/shared/services/language.service';
 import { forkJoin } from 'rxjs';
 import { MessageConstant } from 'src/app/shared/constants/message.constant';
-import { makeSeoAlias, checkExtension, checkFileSize } from 'src/app/shared/functions/utilities.function';
+import { checkExtension } from 'src/app/shared/functions/utilities.function';
 import { DataService } from 'src/app/shared/services/data.service';
 import { ProjectCategoryService } from 'src/app/shared/services/project-category.service';
 import { UploadService } from 'src/app/shared/services/upload.service';
@@ -19,11 +18,9 @@ import { UploadService } from 'src/app/shared/services/upload.service';
 export class ProjectAddEditModalComponent implements OnInit {
   @Input() data: any;
   @Input() isAddNew: boolean;
-  @Input() selectedLanguage: string;
   spinning: boolean;
   projectForm: FormGroup;
   loadingSaveChanges: boolean;
-  languages: any[] = [];
   projectCategories: any[] = [];
   config: any = {
     ///
@@ -45,7 +42,6 @@ export class ProjectAddEditModalComponent implements OnInit {
     private modal: NzModalRef,
     private projectService: ProjectService,
     private projectCategoryService: ProjectCategoryService,
-    private languageService: LanguageService,
     private dataService: DataService,
     private uploadService: UploadService,
     private messageService: MessageService,
@@ -57,14 +53,13 @@ export class ProjectAddEditModalComponent implements OnInit {
 
     this.spinning = true;
     this.forkJoin().subscribe((res: any) => {
-      this.languages = res[0];
-      this.projectCategories = res[1];
-      console.log(res[1]);
+      this.projectCategories = res[0];
 
       if (this.isAddNew) {
         this.projectForm.patchValue({
           ...this.data,
-          languageId: this.selectedLanguage,
+          isHighlight: false,
+          selectedAsSlider: false,
           status: this.isAddNew ? true : this.data.status
         });
       } else {
@@ -80,8 +75,7 @@ export class ProjectAddEditModalComponent implements OnInit {
 
   forkJoin() {
     return forkJoin([
-      this.languageService.getAll(),
-      this.projectCategoryService.getAll(this.selectedLanguage)
+      this.projectCategoryService.getAll()
     ]);
   }
 
@@ -91,14 +85,12 @@ export class ProjectAddEditModalComponent implements OnInit {
       categoryId: [null, [Validators.required]],
       image: [null],
       imageName: [null, [Validators.required]],
-      languageId: [null],
-      name: [null, [Validators.required]],
-      description: [null],
-      content: [null],
-      seoPageTitle: [null, [Validators.required]],
-      seoAlias: [null, [Validators.required]],
-      seoKeywords: [null],
-      seoDescription: [null],
+      name_VN: [null, [Validators.required]],
+      name_EN: [null, [Validators.required]],
+      content_VN: [null],
+      content_EN: [null],
+      isHighlight: [null],
+      selectedAsSlider: [null],
       createdDate: [null],
       createdBy: [null],
       status: [null]
@@ -165,51 +157,6 @@ export class ProjectAddEditModalComponent implements OnInit {
           }, _ => {
             this.loadingSaveChanges = false;
           });
-        });
-    }
-  }
-
-  changeName(input: any) {
-    console.log(input);
-    this.projectForm.patchValue({
-      seoAlias: makeSeoAlias(input)
-    });
-  }
-
-  changeLanguage(event: any) {
-    this.spinning = true;
-    this.projectForm.markAsPristine();
-    if (this.isAddNew === false) {
-      forkJoin([
-        this.projectService.getById(this.data.id, event),
-        this.projectCategoryService.getAll(event)
-      ]).subscribe((res: any) => {
-        const getById = res[0];
-        this.projectCategories = res[1];
-
-        this.projectForm.patchValue({
-          id: getById.id,
-          categoryId: getById.categoryId,
-          image: getById.image,
-          name: getById.name,
-          description: getById.description,
-          content: getById.content,
-          seoPageTitle: getById.seoPageTitle,
-          seoAlias: getById.seoAlias,
-          seoKeywords: getById.seoKeywords,
-          seoDescription: getById.seoDescription,
-          createdDate: getById.createdDate,
-          createdBy: getById.createdBy,
-          status: getById.status
-        });
-        this.projectForm.markAsPristine();
-        this.spinning = false;
-      });
-    } else {
-      this.projectCategoryService.getAll(event)
-        .subscribe((res: any[]) => {
-          this.projectCategories = res;
-          this.spinning = false;
         });
     }
   }

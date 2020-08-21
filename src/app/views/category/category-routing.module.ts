@@ -25,10 +25,6 @@ const routes: Routes = [
                 loadChildren: () => import('./project/project.module').then(m => m.ProjectModule)
             },
             {
-                path: 'slide',
-                loadChildren: () => import('./slide/slide.module').then(m => m.SlideModule)
-            },
-            {
                 path: '',
                 redirectTo: 'loai-san-pham',
                 pathMatch: 'full'

@@ -7,7 +7,6 @@ import { MessageConstant } from 'src/app/shared/constants/message.constant';
 import { SystemConstant } from 'src/app/shared/constants/system.constant';
 import { ProductAddEditModalComponent } from './modals/product-add-edit-modal/product-add-edit-modal.component';
 import { ProductService } from 'src/app/shared/services/product.service';
-import { LanguageService } from 'src/app/shared/services/language.service';
 import { Subscription } from 'rxjs';
 import { DataService } from 'src/app/shared/services/data.service';
 
@@ -40,17 +39,12 @@ export class ProductComponent implements OnInit, OnDestroy {
     private nzContextMenuService: NzContextMenuService,
     private productService: ProductService,
     private messageService: MessageService,
-    private languageService: LanguageService,
     private dataService: DataService
   ) { }
 
   ngOnInit() {
     this.loading = true;
-    this.getAllLanguages(() => {
-      console.log(this.languages);
-      this.pagingParams.languageId = this.languages.filter(x => x.isDefault === true)[0].id;
-      this.loadData();
-    });
+    this.loadData();
 
     this.loadDataSub = this.dataService.loadData$
       .subscribe((res: boolean) => {
@@ -85,14 +79,6 @@ export class ProductComponent implements OnInit, OnDestroy {
       });
   }
 
-  getAllLanguages(callback: () => any) {
-    this.languageService.getAll()
-      .subscribe((res: any[]) => {
-        this.languages = res;
-        callback();
-      });
-  }
-
   create() {
     const modal = this.modalService.create({
       nzTitle: 'Thêm mới sản phẩm',
@@ -108,8 +94,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       nzClosable: true,
       nzComponentParams: {
         data: {},
-        isAddNew: true,
-        selectedLanguage: this.pagingParams.languageId
+        isAddNew: true
       }
     });
 
@@ -121,7 +106,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
   update(data: any) {
-    this.productService.getById(data.id, this.pagingParams.languageId)
+    this.productService.getById(data.id)
       .subscribe((res: any) => {
         const modal = this.modalService.create({
           nzTitle: 'Cập nhật sản phẩm',
@@ -137,8 +122,7 @@ export class ProductComponent implements OnInit, OnDestroy {
           nzClosable: true,
           nzComponentParams: {
             data: res,
-            isAddNew: false,
-            selectedLanguage: this.pagingParams.languageId
+            isAddNew: false
           }
         });
 
@@ -162,17 +146,17 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
   onQueryParamsChange(params: NzTableQueryParams) {
-    if (this.isFirstLoad) {
-      this.isFirstLoad = false;
-      return;
-    }
-    const { pageSize, pageIndex, sort } = params;
-    const currentSort = sort.find(item => item.value !== null);
-    this.pagingParams.sortKey = (currentSort && currentSort.key) || '';
-    this.pagingParams.sortValue = (currentSort && currentSort.value) || '';
-    this.pagination.currentPage = pageIndex;
-    this.pagination.itemsPerPage = pageSize;
-    this.loadData();
+    // if (this.isFirstLoad) {
+    //   this.isFirstLoad = false;
+    //   return;
+    // }
+    // const { pageSize, pageIndex, sort } = params;
+    // const currentSort = sort.find(item => item.value !== null);
+    // this.pagingParams.sortKey = (currentSort && currentSort.key) || '';
+    // this.pagingParams.sortValue = (currentSort && currentSort.value) || '';
+    // this.pagination.currentPage = pageIndex;
+    // this.pagination.itemsPerPage = pageSize;
+    // this.loadData();
   }
 
   search(keyword: string) {
@@ -182,10 +166,5 @@ export class ProductComponent implements OnInit, OnDestroy {
 
   contextMenu($event: MouseEvent, menu: NzDropdownMenuComponent): void {
     this.nzContextMenuService.create($event, menu);
-  }
-
-  changeLanguage(event: any) {
-    this.pagingParams.languageId = event;
-    this.loadData();
   }
 }

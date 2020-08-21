@@ -2,83 +2,65 @@
   <form nz-form [formGroup]="projectForm" autocomplete="off">
     <div nz-row [nzGutter]="8">
       <div nz-col nzSpan="18">
-        <nz-card nzSize="small" nzTitle="Thông tin chung" [nzExtra]="extraTemplate">
+        <nz-card nzSize="small">
           <nz-form-item>
-            <nz-form-label [nzSm]="5" [nzXs]="24" nzRequired nzFor="name">Tên dự án</nz-form-label>
-            <nz-form-control [nzSm]="19" [nzXs]="24" nzErrorTip="Vui lòng nhập tên loại sản phẩm.">
-              <input type="text" nz-input formControlName="name" id="name" (keyup)="changeName($event.target.value)" />
+            <nz-form-label [nzSm]="5" [nzXs]="24" nzRequired nzFor="name_VN">Tên dự án (VN)</nz-form-label>
+            <nz-form-control [nzSm]="19" [nzXs]="24" nzErrorTip="Vui lòng nhập tên dự án (VN).">
+              <input type="text" nz-input formControlName="name_VN" id="name_VN" />
             </nz-form-control>
           </nz-form-item>
           <nz-form-item>
-            <nz-form-label [nzSm]="5" [nzXs]="24" nzRequired nzFor="seoAlias">Đường dẫn seo</nz-form-label>
-            <nz-form-control [nzSm]="19" [nzXs]="24">
-              <input type="text" nz-input formControlName="seoAlias" id="seoAlias" readonly />
+            <nz-form-label [nzSm]="5" [nzXs]="24" nzRequired nzFor="name_EN">Tên dự án (EN)</nz-form-label>
+            <nz-form-control [nzSm]="19" [nzXs]="24" nzErrorTip="Vui lòng nhập tên dự án (EN).">
+              <input type="text" nz-input formControlName="name_EN" id="name_EN" />
             </nz-form-control>
           </nz-form-item>
           <nz-form-item>
-            <nz-form-label [nzSm]="5" [nzXs]="24">Mô tả</nz-form-label>
-            <nz-form-control [nzSm]="19" [nzXs]="24">
-              <ckeditor [config]="config" formControlName="description"></ckeditor>
-            </nz-form-control>
-          </nz-form-item>
-          <nz-form-item>
-            <nz-form-label [nzSm]="5" [nzXs]="24">Nội dung</nz-form-label>
-            <nz-form-control [nzSm]="19" [nzXs]="24">
-              <ckeditor [config]="config" formControlName="content"></ckeditor>
-            </nz-form-control>
-          </nz-form-item>
-          <nz-form-item>
-            <nz-form-label [nzSm]="5" [nzXs]="24" nzRequired nzFor="seoPageTitle">Tên tiêu đề</nz-form-label>
-            <nz-form-control [nzSm]="19" [nzXs]="24" nzErrorTip="Vui lòng nhập tên tiêu đề.">
-              <input type="text" nz-input formControlName="seoPageTitle" id="seoPageTitle" />
-            </nz-form-control>
-          </nz-form-item>
-          <nz-form-item>
-            <nz-form-label [nzSm]="5" [nzXs]="24" nzFor="seoKeywords">Từ khóa seo</nz-form-label>
-            <nz-form-control [nzSm]="19" [nzXs]="24">
-              <textarea nz-input formControlName="seoKeywords" id="seoKeywords"></textarea>
-            </nz-form-control>
-          </nz-form-item>
-          <nz-form-item>
-            <nz-form-label [nzSm]="5" [nzXs]="24" nzFor="seoDescription">Mô tả seo</nz-form-label>
-            <nz-form-control [nzSm]="19" [nzXs]="24">
-              <textarea nz-input formControlName="seoDescription" id="seoDescription"></textarea>
-            </nz-form-control>
-          </nz-form-item>
-        </nz-card>
-        <ng-template #extraTemplate>
-          <nz-select nzSize="small" [nzDisabled]="projectForm.dirty" formControlName="languageId" id="languageId"
-            (ngModelChange)="changeLanguage($event)">
-            <nz-option *ngFor="let item of languages" [nzValue]="item.id" [nzLabel]="item.name"></nz-option>
-          </nz-select>
-        </ng-template>
-      </div>
-      <div nz-col nzSpan="6">
-        <nz-card nzSize="small" nzTitle="Loại dự án">
-          <nz-form-item>
-            <nz-form-control nzErrorTip="Vui lòng chọn loại dự án.">
+            <nz-form-label [nzSm]="5" [nzXs]="24" nzRequired nzFor="categoryId">Tên loại</nz-form-label>
+            <nz-form-control [nzSm]="19" [nzXs]="24" nzErrorTip="Vui lòng chọn tên loại dự án.">
               <nz-select formControlName="categoryId" id="categoryId">
-                <nz-option *ngFor="let item of projectCategories" [nzValue]="item.id" [nzLabel]="item.name"></nz-option>
+                <nz-option *ngFor="let item of projectCategories" [nzValue]="item.id" [nzLabel]="item.name_VN">
+                </nz-option>
               </nz-select>
             </nz-form-control>
           </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSm]="5" [nzXs]="24" nzFor="content_VN">Nội dung (VN)</nz-form-label>
+            <nz-form-control [nzSm]="19" [nzXs]="24">
+              <ckeditor [config]="config" formControlName="content_VN" id="content_VN"></ckeditor>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSm]="5" [nzXs]="24" nzFor="content_EN">Nội dung (EN)</nz-form-label>
+            <nz-form-control [nzSm]="19" [nzXs]="24">
+              <ckeditor [config]="config" formControlName="content_EN" id="content_EN"></ckeditor>
+            </nz-form-control>
+          </nz-form-item>
         </nz-card>
-        <nz-card style="margin-top: 10px;" nzSize="small" nzTitle="Ảnh đại diện">
+      </div>
+      <div nz-col nzSpan="6">
+        <nz-card nzSize="small" nzTitle="Ảnh đại diện">
           <nz-form-item style="margin-bottom: 0;">
             <nz-form-control nzErrorTip="Vui lòng chọn ảnh đại diện.">
               <div *ngIf="!src" class="uploadfilecontainer" (click)="fileInput.click()" appDragDrop
                 (onFileDropped)="uploadFile($event)">
               </div>
               <input hidden type="file" #fileInput (change)="uploadFile($event.target.files)">
-              <img *ngIf="src" (click)="fileInput.click()" appDragDrop
-              (onFileDropped)="uploadFile($event)" style="width: 100%; cursor: pointer;" [src]="src">
+              <img *ngIf="src" (click)="fileInput.click()" appDragDrop (onFileDropped)="uploadFile($event)"
+                style="width: 100%; cursor: pointer;" [src]="src">
               <div style="text-align: center;">{{projectForm.value.imageName}}</div>
               <input hidden type="text" nz-input formControlName="imageName" />
             </nz-form-control>
           </nz-form-item>
         </nz-card>
+        <nz-card style="margin-top: 10px;" nzSize="small" nzTitle="Chọn làm slider">
+          <label nz-checkbox formControlName="selectedAsSlider"></label>
+        </nz-card>
+        <nz-card style="margin-top: 10px;" nzSize="small" nzTitle="Nổi bật">
+          <label nz-checkbox formControlName="isHighlight"></label>
+        </nz-card>
         <nz-card style="margin-top: 10px;" nzSize="small" nzTitle="Trạng thái">
-          <label nz-checkbox formControlName="status">{{projectForm.value.status ? 'Kích hoạt' : 'Khóa'}}</label>
+          <label nz-checkbox formControlName="status"></label>
         </nz-card>
       </div>
     </div>

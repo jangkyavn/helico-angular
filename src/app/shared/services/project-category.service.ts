@@ -17,8 +17,8 @@ export class ProjectCategoryService {
         private http: HttpClient,
         private env: EnvService) { }
 
-    getAll(languageId: string) {
-        return this.http.get(this.baseUrl + languageId);
+    getAll() {
+        return this.http.get(this.baseUrl);
     }
 
     getAllPaging(page?: any, itemsPerPage?: any, pagingParams?: PagingParams): Observable<PaginatedResult<any[]>> {
@@ -47,7 +47,7 @@ export class ProjectCategoryService {
     }
 
     getById(id: any, languageId: string) {
-        return this.http.get(this.baseUrl + id + '/' + languageId);
+        return this.http.get(this.baseUrl + id);
     }
 
     create(data: any) {
