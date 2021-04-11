@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FileReponse } from '../models/file-repsonse.model';
 import { Observable } from 'rxjs';
+import { getHeader } from './header';
 
 @Injectable({
     providedIn: 'root'
@@ -18,6 +19,6 @@ export class UploadService {
         data.append('folderType', folderType);
         data.append('folderName', folderName);
         data.append('fileName', fileName);
-        return this.http.post(this.baseUrl, data);
+        return this.http.post(this.baseUrl, data, getHeader());
     }
 }

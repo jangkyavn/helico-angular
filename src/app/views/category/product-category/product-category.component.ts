@@ -51,6 +51,7 @@ export class ProductCategoryComponent implements OnInit, OnDestroy {
     this.loadDataSub = this.dataService.loadData$
       .subscribe((res: boolean) => {
         if (res) {
+          console.log(res);
           this.loadData();
         }
       });

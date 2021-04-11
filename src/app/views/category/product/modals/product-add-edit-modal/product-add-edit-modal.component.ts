@@ -25,7 +25,7 @@ export class ProductAddEditModalComponent implements OnInit {
   productCategories: any[] = [];
   config: any = {
     extraPlugins: 'colorbutton',
-    filebrowserUploadUrl: '/api/Upload/UploadImageForCKEditor',
+    filebrowserUploadUrl: '/api/Upload/UploadImageForCKEditor?folderName=products',
     filebrowserUploadMethod: 'form'
   };
   files: any = [];

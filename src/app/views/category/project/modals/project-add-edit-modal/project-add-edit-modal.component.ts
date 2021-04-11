@@ -24,7 +24,7 @@ export class ProjectAddEditModalComponent implements OnInit {
   projectCategories: any[] = [];
   config: any = {
     extraPlugins: 'colorbutton',
-    filebrowserUploadUrl: '/api/Upload/UploadImageForCKEditor',
+    filebrowserUploadUrl: 'https://localhost:44333/api/Upload/UploadImageForCKEditor?folderName=projects',
     filebrowserUploadMethod: 'form'
   };
   files: any = [];
@@ -122,17 +122,9 @@ export class ProjectAddEditModalComponent implements OnInit {
           this.projectService.create(data).subscribe((res: any) => {
             if (res) {
               this.messageService.success(MessageConstant.CREATED_OK_MSG);
-              this.loadingSaveChanges = false;
-              this.projectForm.markAsPristine();
-              this.isAddNew = false;
-              this.data = res;
-              this.projectForm.patchValue({
-                ...data,
-                id: res.id,
-                createdDate: res.createdDate,
-                createdBy: res.createdBy
-              });
-              this.dataService.loadData(true);
+              this.modal.destroy(true);
+            } else {
+              this.messageService.success(MessageConstant.AN_ERROR_OCCURED);
             }
             this.loadingSaveChanges = false;
           }, _ => {
@@ -151,9 +143,9 @@ export class ProjectAddEditModalComponent implements OnInit {
           this.projectService.update(data).subscribe((res: any) => {
             if (res) {
               this.messageService.success(MessageConstant.UPDATED_OK_MSG);
-              this.loadingSaveChanges = false;
-              this.projectForm.markAsPristine();
-              this.dataService.loadData(true);
+              this.modal.destroy(true);
+            } else {
+              this.messageService.success(MessageConstant.AN_ERROR_OCCURED);
             }
             this.loadingSaveChanges = false;
           }, _ => {

@@ -3,7 +3,6 @@ import { ProjectCategoryService } from 'src/app/shared/services/project-category
 import { MessageService } from 'src/app/shared/services/message.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MessageConstant } from 'src/app/shared/constants/message.constant';
-import { DataService } from 'src/app/shared/services/data.service';
 import { NzModalRef } from 'ng-zorro-antd/modal';
 
 @Component({
@@ -29,7 +28,6 @@ export class ProjectCategoryAddEditModalComponent implements OnInit {
     private fb: FormBuilder,
     private modal: NzModalRef,
     private projectCategoryService: ProjectCategoryService,
-    private dataService: DataService,
     private messageService: MessageService,
   ) { }
 
@@ -83,18 +81,9 @@ export class ProjectCategoryAddEditModalComponent implements OnInit {
       this.projectCategoryService.create(data).subscribe((res: any) => {
         if (res) {
           this.messageService.success(MessageConstant.CREATED_OK_MSG);
-          this.loadingSaveChanges = false;
-          this.projectCategoryForm.markAsPristine();
-          this.isAddNew = false;
-          this.data = res;
-          this.projectCategoryForm.patchValue({
-            ...data,
-            id: res.id,
-            position: res.position,
-            createdDate: res.createdDate,
-            createdBy: res.createdBy
-          });
-          this.dataService.loadData(true);
+          this.modal.destroy(true);
+        } else {
+          this.messageService.success(MessageConstant.AN_ERROR_OCCURED);
         }
 
         this.loadingSaveChanges = false;
@@ -105,9 +94,9 @@ export class ProjectCategoryAddEditModalComponent implements OnInit {
       this.projectCategoryService.update(data).subscribe((res: any) => {
         if (res) {
           this.messageService.success(MessageConstant.UPDATED_OK_MSG);
-          this.loadingSaveChanges = false;
-          this.projectCategoryForm.markAsPristine();
-          this.dataService.loadData(true);
+          this.modal.destroy(true);
+        } else {
+          this.messageService.success(MessageConstant.AN_ERROR_OCCURED);
         }
 
         this.loadingSaveChanges = false;

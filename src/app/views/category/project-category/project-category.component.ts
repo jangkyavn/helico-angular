@@ -1,5 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Pagination, PaginatedResult } from 'src/app/shared/models/pagination.model';
+import { Component, OnInit } from '@angular/core';
 import { PagingParams } from 'src/app/shared/heplers/paging.param';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MessageService } from 'src/app/shared/services/message.service';
@@ -7,8 +6,6 @@ import { MessageConstant } from 'src/app/shared/constants/message.constant';
 import { SystemConstant } from 'src/app/shared/constants/system.constant';
 import { ProjectCategoryAddEditModalComponent } from './modals/project-category-add-edit-modal/project-category-add-edit-modal.component';
 import { ProjectCategoryService } from 'src/app/shared/services/project-category.service';
-import { Subscription } from 'rxjs';
-import { DataService } from 'src/app/shared/services/data.service';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown';
 import { NzTableQueryParams } from 'ng-zorro-antd/table';
@@ -18,65 +15,52 @@ import { NzTableQueryParams } from 'ng-zorro-antd/table';
   templateUrl: './project-category.component.html',
   styleUrls: ['./project-category.component.scss']
 })
-export class ProjectCategoryComponent implements OnInit, OnDestroy {
+export class ProjectCategoryComponent implements OnInit {
   listOfData: any[] = [];
   loading = false;
   isFirstLoad = true;
   languages: any[] = [];
-  pagination: Pagination = {
-    currentPage: 1,
-    itemsPerPage: -1
-  };
-  loadDataSub: Subscription;
+  totalCount = 0;
+  totalPages = 0;
   pagingParams: PagingParams = {
     keyword: '',
     sortKey: '',
     sortValue: '',
     searchKey: '',
     searchValue: '',
-    languageId: 'vi'
+    languageId: 'vi',
+    pageNumber: 1,
+    pageSize: 100
   };
 
   constructor(
     private modalService: NzModalService,
     private nzContextMenuService: NzContextMenuService,
     private projectCategoryService: ProjectCategoryService,
-    private messageService: MessageService,
-    private dataService: DataService
+    private messageService: MessageService
   ) { }
 
   ngOnInit() {
     this.loading = true;
     this.loadData();
-
-    this.loadDataSub = this.dataService.loadData$
-      .subscribe((res: boolean) => {
-        if (res) {
-          this.loadData();
-        }
-      });
-  }
-
-  ngOnDestroy() {
-    this.loadDataSub.unsubscribe();
   }
 
   loadData(reset: boolean = false): void {
     if (reset) {
-      this.pagination.currentPage = 1;
+      this.pagingParams.pageNumber = 1;
     }
     this.loading = true;
-    this.projectCategoryService.getAllPaging(
-      this.pagination.currentPage || 1,
-      this.pagination.itemsPerPage || SystemConstant.PAGE_SIZE,
-      this.pagingParams)
-      .subscribe((res: PaginatedResult<any[]>) => {
+    this.projectCategoryService.getAllPaging(this.pagingParams)
+      .subscribe((res: any) => {
         this.loading = false;
-        this.pagination = res.pagination;
-        this.listOfData = res.result;
 
-        if (this.listOfData.length === 0 && this.pagination.currentPage !== 1) {
-          this.pagination.currentPage -= 1;
+        this.totalPages = res.totalPages;
+        this.totalCount = res.totalCount;
+        this.pagingParams.pageNumber = res.currentPage;
+        this.listOfData = res.items;
+
+        if (this.listOfData.length === 0 && this.pagingParams.pageNumber !== 1) {
+          this.pagingParams.pageNumber -= 1;
           this.loadData();
         }
       });

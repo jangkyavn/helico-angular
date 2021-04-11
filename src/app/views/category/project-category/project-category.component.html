@@ -17,8 +17,8 @@
     </div>
   </div>
   <nz-table nzShowSizeChanger nzBordered nzSize="small" [nzData]="listOfData" [nzFrontPagination]="false"
-    [nzShowQuickJumper]="pagination?.totalPages > 1" [nzLoading]="loading" [nzTotal]="pagination?.totalItems"
-    [nzPageSize]="pagination?.itemsPerPage" [nzPageIndex]="pagination?.currentPage"
+    [nzShowQuickJumper]="totalPages > 1" [nzLoading]="loading" [nzTotal]="totalCount" [nzPageSize]="totalCount"
+    [nzPageIndex]="pagingParams?.pageNumber" [nzShowPagination]="totalPages > 1"
     (nzQueryParams)="onQueryParamsChange($event)">
     <thead>
       <tr>

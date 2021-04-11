@@ -22,29 +22,8 @@ export class ProjectCategoryService {
         return this.http.get(this.baseUrl, getHeader());
     }
 
-    getAllPaging(page?: any, itemsPerPage?: any, pagingParams?: PagingParams): Observable<PaginatedResult<any[]>> {
-        const paginatedResult = new PaginatedResult<any[]>();
-
-        let params = new HttpParams();
-        params = params.append('pageNumber', page);
-        params = params.append('pageSize', itemsPerPage);
-        params = params.append('keyword', pagingParams.keyword || '');
-        params = params.append('sortKey', pagingParams.sortKey || '');
-        params = params.append('sortValue', pagingParams.sortValue || '');
-        params = params.append('searchKey', pagingParams.searchKey || '');
-        params = params.append('searchValue', pagingParams.searchValue || '');
-        params = params.append('languageId', pagingParams.languageId || '');
-
-        return this.http.get<any[]>(this.baseUrl + 'getAllPaging', { observe: 'response', params, ...getHeader() })
-            .pipe(
-                map(response => {
-                    paginatedResult.result = response.body
-                    if (response.headers.get('Pagination') != null) {
-                        paginatedResult.pagination = JSON.parse(response.headers.get('Pagination'));
-                    }
-                    return paginatedResult;
-                })
-            );
+    getAllPaging(params: any) {
+        return this.http.post(this.baseUrl + 'getAllPaging', params, getHeader());
     }
 
     getById(id: any, languageId: string) {

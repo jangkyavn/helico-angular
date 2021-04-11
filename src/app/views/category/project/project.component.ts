@@ -1,13 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Pagination, PaginatedResult } from 'src/app/shared/models/pagination.model';
+import { Component, OnInit, } from '@angular/core';
 import { PagingParams } from 'src/app/shared/heplers/paging.param';
 import { MessageService } from 'src/app/shared/services/message.service';
 import { MessageConstant } from 'src/app/shared/constants/message.constant';
 import { SystemConstant } from 'src/app/shared/constants/system.constant';
 import { ProjectAddEditModalComponent } from './modals/project-add-edit-modal/project-add-edit-modal.component';
 import { ProjectService } from 'src/app/shared/services/project.service';
-import { Subscription } from 'rxjs';
-import { DataService } from 'src/app/shared/services/data.service';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown';
 import { NzTableQueryParams } from 'ng-zorro-antd/table';
@@ -17,65 +14,52 @@ import { NzTableQueryParams } from 'ng-zorro-antd/table';
   templateUrl: './project.component.html',
   styleUrls: ['./project.component.scss']
 })
-export class ProjectComponent implements OnInit, OnDestroy {
+export class ProjectComponent implements OnInit {
   listOfData: any[] = [];
   loading = false;
   isFirstLoad = true;
   languages: any[] = [];
-  pagination: Pagination = {
-    currentPage: 1,
-    itemsPerPage: 10
-  };
-  loadDataSub: Subscription;
+  totalCount = 0;
+  totalPages = 0;
   pagingParams: PagingParams = {
     keyword: '',
     sortKey: '',
     sortValue: '',
     searchKey: '',
     searchValue: '',
-    languageId: 'vi'
+    languageId: 'vi',
+    pageNumber: 1,
+    pageSize: 100
   };
 
   constructor(
     private modalService: NzModalService,
     private nzContextMenuService: NzContextMenuService,
     private projectService: ProjectService,
-    private messageService: MessageService,
-    private dataService: DataService
+    private messageService: MessageService
   ) { }
 
   ngOnInit() {
     this.loading = true;
     this.loadData();
-
-    this.loadDataSub = this.dataService.loadData$
-      .subscribe((res: boolean) => {
-        if (res) {
-          this.loadData();
-        }
-      });
-  }
-
-  ngOnDestroy() {
-    this.loadDataSub.unsubscribe();
   }
 
   loadData(reset: boolean = false): void {
     if (reset) {
-      this.pagination.currentPage = 1;
+      this.pagingParams.pageNumber = 1;
     }
     this.loading = true;
-    this.projectService.getAllPaging(
-      this.pagination.currentPage || 1,
-      this.pagination.itemsPerPage || SystemConstant.PAGE_SIZE,
-      this.pagingParams)
-      .subscribe((res: PaginatedResult<any[]>) => {
+    this.projectService.getAllPaging(this.pagingParams)
+      .subscribe((res: any) => {
         this.loading = false;
-        this.pagination = res.pagination;
-        this.listOfData = res.result;
 
-        if (this.listOfData.length === 0 && this.pagination.currentPage !== 1) {
-          this.pagination.currentPage -= 1;
+        this.totalPages = res.totalPages;
+        this.totalCount = res.totalCount;
+        this.pagingParams.pageNumber = res.currentPage;
+        this.listOfData = res.items;
+
+        if (this.listOfData.length === 0 && this.pagingParams.pageNumber !== 1) {
+          this.pagingParams.pageNumber -= 1;
           this.loadData();
         }
       });
