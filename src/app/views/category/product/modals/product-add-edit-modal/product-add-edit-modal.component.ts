@@ -2,13 +2,13 @@ import { Component, OnInit, Input, HostListener } from '@angular/core';
 import { ProductService } from 'src/app/shared/services/product.service';
 import { MessageService } from 'src/app/shared/services/message.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NzModalRef } from 'ng-zorro-antd';
 import { forkJoin } from 'rxjs';
 import { MessageConstant } from 'src/app/shared/constants/message.constant';
 import { checkExtension } from 'src/app/shared/functions/utilities.function';
 import { DataService } from 'src/app/shared/services/data.service';
 import { ProductCategoryService } from 'src/app/shared/services/product-category.service';
 import { UploadService } from 'src/app/shared/services/upload.service';
+import { NzModalRef } from 'ng-zorro-antd/modal';
 
 @Component({
   selector: 'app-product-add-edit-modal',
@@ -24,7 +24,9 @@ export class ProductAddEditModalComponent implements OnInit {
   loadingSaveChanges: boolean;
   productCategories: any[] = [];
   config: any = {
-    ///
+    extraPlugins: 'colorbutton',
+    filebrowserUploadUrl: '/api/Upload/UploadImageForCKEditor',
+    filebrowserUploadMethod: 'form'
   };
   files: any = [];
   src: any;

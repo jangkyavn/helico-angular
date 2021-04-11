@@ -7,6 +7,7 @@ import { map } from 'rxjs/operators';
 import { PagingParams } from '../heplers/paging.param';
 import { PaginatedResult } from '../models/pagination.model';
 import { User } from '../models/user.model';
+import { getHeader } from './header';
 
 @Injectable({
     providedIn: 'root'
@@ -39,7 +40,7 @@ export class UserService {
             params = params.append('searchValue', pagingParams.searchValue || '');
         }
 
-        return this.http.get<User[]>(this.baseUrl + 'getAllPaging', { observe: 'response', params })
+        return this.http.get<User[]>(this.baseUrl + 'getAllPaging', { observe: 'response', params, ...getHeader() })
             .pipe(
                 map(response => {
                     paginatedResult.result = response.body;
@@ -52,42 +53,42 @@ export class UserService {
     }
 
     getById(id: any) {
-        return this.http.get(this.baseUrl + id);
+        return this.http.get(this.baseUrl + id, getHeader());
     }
 
     getGenders() {
-        return this.http.get(this.baseUrl + 'GetGenders');
+        return this.http.get(this.baseUrl + 'GetGenders', getHeader());
     }
 
     checkCurrentPassword(password: string) {
-        return this.http.get(this.baseUrl + 'checkCurrentPassword/' + password);
+        return this.http.get(this.baseUrl + 'checkCurrentPassword/' + password, getHeader());
     }
 
     create(data: User) {
-        return this.http.post(this.baseUrl, data);
+        return this.http.post(this.baseUrl, data, getHeader());
     }
 
     update(data: User) {
-        return this.http.put(this.baseUrl, data);
+        return this.http.put(this.baseUrl, data, getHeader());
     }
 
     updateAvatar(data: User) {
-        return this.http.put(this.baseUrl + 'UpdateAvatar', data);
+        return this.http.put(this.baseUrl + 'UpdateAvatar', data, getHeader());
     }
 
     changeStatus(data: any) {
-        return this.http.put(this.baseUrl + 'changeStatus', data);
+        return this.http.put(this.baseUrl + 'changeStatus', data, getHeader());
     }
 
     changePassword(data: any) {
-        return this.http.put(this.baseUrl + 'changePassword', data);
+        return this.http.put(this.baseUrl + 'changePassword', data, getHeader());
     }
 
     resetPassword(data: any) {
-        return this.http.put(this.baseUrl + 'resetPassword', data);
+        return this.http.put(this.baseUrl + 'resetPassword', data, getHeader());
     }
 
     delete(id: any) {
-        return this.http.delete(this.baseUrl + id);
+        return this.http.delete(this.baseUrl + id, getHeader());
     }
 }

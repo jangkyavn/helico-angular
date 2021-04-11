@@ -7,6 +7,7 @@ import { map } from 'rxjs/operators';
 import { PagingParams } from '../heplers/paging.param';
 import { PaginatedResult } from '../models/pagination.model';
 import { Diary } from '../models/diary.model';
+import { getHeader } from './header';
 
 @Injectable({
     providedIn: 'root'
@@ -35,7 +36,7 @@ export class DiaryService {
             params = params.append('searchValue', pagingParams.searchValue || '');
         }
 
-        return this.http.get<Diary[]>(this.baseUrl + 'getAllPaging', { observe: 'response', params })
+        return this.http.get<Diary[]>(this.baseUrl + 'getAllPaging', { observe: 'response', params, ...getHeader() })
             .pipe(
                 map(response => {
                     paginatedResult.result = response.body;
@@ -48,10 +49,10 @@ export class DiaryService {
     }
 
     getById(id: any) {
-        return this.http.get(this.baseUrl + id);
+        return this.http.get(this.baseUrl + id, getHeader());
     }
 
     create(data: Diary) {
-        return this.http.post(this.baseUrl, data);
+        return this.http.post(this.baseUrl, data, getHeader());
     }
 }

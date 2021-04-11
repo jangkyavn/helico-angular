@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { NzContextMenuService, NzDropdownMenuComponent, NzTableQueryParams, NzModalService } from 'ng-zorro-antd';
 import { Pagination, PaginatedResult } from 'src/app/shared/models/pagination.model';
 import { PagingParams } from 'src/app/shared/heplers/paging.param';
 import { UserService } from 'src/app/shared/services/user.service';
@@ -8,6 +7,9 @@ import { User } from 'src/app/shared/models/user.model';
 import { MessageConstant } from 'src/app/shared/constants/message.constant';
 import { SystemConstant } from 'src/app/shared/constants/system.constant';
 import { UserAddEditModalComponent } from './modals/user-add-edit-modal/user-add-edit-modal.component';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown';
+import { NzTableQueryParams } from 'ng-zorro-antd/table';
 
 @Component({
   selector: 'app-users',

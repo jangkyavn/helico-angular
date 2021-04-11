@@ -33,7 +33,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "../helico-asp/WebAPI/ClientApp",
+            "outputPath": "dist/helico",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",

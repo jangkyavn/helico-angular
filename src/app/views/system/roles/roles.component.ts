@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { NzContextMenuService, NzDropdownMenuComponent, NzTableQueryParams, NzModalService } from 'ng-zorro-antd';
 import { Pagination, PaginatedResult } from 'src/app/shared/models/pagination.model';
 import { PagingParams } from 'src/app/shared/heplers/paging.param';
 import { MessageService } from 'src/app/shared/services/message.service';
@@ -9,6 +8,9 @@ import { SystemConstant } from 'src/app/shared/constants/system.constant';
 import { RoleAddEditModalComponent } from './modals/role-add-edit-modal/role-add-edit-modal.component';
 import { RoleService } from 'src/app/shared/services/role.service';
 import { Role } from 'src/app/shared/models/role.model';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown';
+import { NzTableQueryParams } from 'ng-zorro-antd/table';
 
 @Component({
   selector: 'app-roles',

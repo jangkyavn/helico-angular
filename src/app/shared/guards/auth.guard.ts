@@ -18,9 +18,7 @@ export class AuthGuard implements CanActivate {
         const roles = next.firstChild.data['roles'] as Array<string>;
         if (roles) {
             const match = this.authService.roleMatch(roles);
-            if (match) {
-                return true;
-            } else {
+            if (!match) {
                 this.messageService.error(MessageConstant.FORBIDDEN);
             }
         }

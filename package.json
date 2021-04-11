@@ -23,7 +23,7 @@
     "@auth0/angular-jwt": "^5.0.2",
     "ckeditor4-angular": "^1.2.2",
     "moment": "^2.29.1",
-    "ng-zorro-antd": "^9.1.2",
+    "ng-zorro-antd": "^11.4.0",
     "ngx-online-status": "^1.0.1",
     "ngx-spinner": "^11.0.1",
     "rxjs": "~6.5.4",

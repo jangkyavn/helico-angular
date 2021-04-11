@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, HostListener } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { NzModalRef } from 'ng-zorro-antd';
+import { NzModalRef } from 'ng-zorro-antd/modal';
 import { MessageService } from 'src/app/shared/services/message.service';
 import { Role } from 'src/app/shared/models/role.model';
 import { RoleService } from 'src/app/shared/services/role.service';

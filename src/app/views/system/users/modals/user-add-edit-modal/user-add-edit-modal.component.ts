@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, HostListener } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { NzModalRef } from 'ng-zorro-antd';
 import { User } from 'src/app/shared/models/user.model';
 import { UserService } from 'src/app/shared/services/user.service';
 import { MessageService } from 'src/app/shared/services/message.service';
@@ -10,6 +9,7 @@ import { forkJoin } from 'rxjs';
 import { MessageConstant } from 'src/app/shared/constants/message.constant';
 import { EnumModel } from 'src/app/shared/models/enum.model';
 import { getFormatedInputDate } from 'src/app/shared/functions/utilities.function';
+import { NzModalRef } from 'ng-zorro-antd/modal';
 
 @Component({
   selector: 'app-user-add-edit-modal',

@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { PaginatedResult } from '../models/pagination.model';
 import { Notification } from '../models/notification.model';
+import { getHeader } from './header';
 
 @Injectable({
     providedIn: 'root'
@@ -25,7 +26,7 @@ export class NotifycationService {
             params = params.append('pageSize', itemsPerPage);
         }
 
-        return this.http.get<Notification[]>(this.baseUrl + 'getAllPaging', { observe: 'response', params })
+        return this.http.get<Notification[]>(this.baseUrl + 'getAllPaging', { observe: 'response', params, ...getHeader() })
             .pipe(
                 map(response => {
                     paginatedResult.result = response.body;
@@ -38,18 +39,18 @@ export class NotifycationService {
     }
 
     getCountUnView() {
-        return this.http.get(this.baseUrl + 'getCountUnView');
+        return this.http.get(this.baseUrl + 'getCountUnView', getHeader());
     }
 
     markViewedAll() {
-        return this.http.put(this.baseUrl + 'markViewedAll', null);
+        return this.http.put(this.baseUrl + 'markViewedAll', null, getHeader());
     }
 
     markSeendNotification(data: any) {
-        return this.http.put(this.baseUrl + 'MarkSeen', data);
+        return this.http.put(this.baseUrl + 'MarkSeen', data, getHeader());
     }
 
     deleteAll() {
-        return this.http.delete(this.baseUrl + 'deleteAll');
+        return this.http.delete(this.baseUrl + 'deleteAll', getHeader());
     }
 }

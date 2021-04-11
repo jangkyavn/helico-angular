@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Observable } from 'rxjs';
+import { getHeader } from './header';
 
 @Injectable({
     providedIn: 'root'
@@ -17,7 +18,7 @@ export class FileService {
         private env: EnvService) { }
 
     getFile(data: any): Observable<any> {
-        return this.http.get(this.baseUrl + 'GetFile?path=' + data, { responseType: 'blob' })
+        return this.http.get(this.baseUrl + 'GetFile?path=' + data, { responseType: 'blob', ...getHeader() })
             .pipe(
                 map((res: Blob) => {
                     const objectURL = URL.createObjectURL(res);

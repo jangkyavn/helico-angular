@@ -7,6 +7,7 @@ import { map } from 'rxjs/operators';
 import { PagingParams } from '../heplers/paging.param';
 import { PaginatedResult } from '../models/pagination.model';
 import { Role } from '../models/role.model';
+import { getHeader } from './header';
 
 @Injectable({
     providedIn: 'root'
@@ -19,7 +20,7 @@ export class RoleService {
         private env: EnvService) { }
 
     getAll() {
-        return this.http.get(this.baseUrl);
+        return this.http.get(this.baseUrl, getHeader());
     }
 
     getAllPaging(page?: any, itemsPerPage?: any, pagingParams?: PagingParams): Observable<PaginatedResult<Role[]>> {
@@ -39,7 +40,7 @@ export class RoleService {
             params = params.append('searchValue', pagingParams.searchValue || '');
         }
 
-        return this.http.get<Role[]>(this.baseUrl + 'getAllPaging', { observe: 'response', params })
+        return this.http.get<Role[]>(this.baseUrl + 'getAllPaging', { observe: 'response', params, ...getHeader() })
             .pipe(
                 map(response => {
                     paginatedResult.result = response.body;
@@ -52,22 +53,22 @@ export class RoleService {
     }
 
     getById(id: any) {
-        return this.http.get(this.baseUrl + id);
+        return this.http.get(this.baseUrl + id, getHeader());
     }
 
     create(data: Role) {
-        return this.http.post(this.baseUrl, data);
+        return this.http.post(this.baseUrl, data, getHeader());
     }
 
     update(data: Role) {
-        return this.http.put(this.baseUrl, data);
+        return this.http.put(this.baseUrl, data, getHeader());
     }
 
     ChangePosition(data: any[]) {
-        return this.http.put(this.baseUrl + 'ChangePosition', data);
+        return this.http.put(this.baseUrl + 'ChangePosition', data, getHeader());
     }
 
     delete(id: any) {
-        return this.http.delete(this.baseUrl + id);
+        return this.http.delete(this.baseUrl + id, getHeader());
     }
 }

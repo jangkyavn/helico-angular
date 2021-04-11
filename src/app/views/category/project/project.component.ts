@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { NzContextMenuService, NzDropdownMenuComponent, NzTableQueryParams, NzModalService } from 'ng-zorro-antd';
 import { Pagination, PaginatedResult } from 'src/app/shared/models/pagination.model';
 import { PagingParams } from 'src/app/shared/heplers/paging.param';
 import { MessageService } from 'src/app/shared/services/message.service';
@@ -9,6 +8,9 @@ import { ProjectAddEditModalComponent } from './modals/project-add-edit-modal/pr
 import { ProjectService } from 'src/app/shared/services/project.service';
 import { Subscription } from 'rxjs';
 import { DataService } from 'src/app/shared/services/data.service';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown';
+import { NzTableQueryParams } from 'ng-zorro-antd/table';
 
 @Component({
   selector: 'app-project',

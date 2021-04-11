@@ -6,6 +6,7 @@ import { map } from 'rxjs/operators';
 
 import { PagingParams } from '../heplers/paging.param';
 import { PaginatedResult } from '../models/pagination.model';
+import { getHeader } from './header';
 
 @Injectable({
     providedIn: 'root'
@@ -18,7 +19,7 @@ export class ProjectService {
         private env: EnvService) { }
 
     getAll() {
-        return this.http.get(this.baseUrl);
+        return this.http.get(this.baseUrl, getHeader());
     }
 
     getAllPaging(page?: any, itemsPerPage?: any, pagingParams?: PagingParams): Observable<PaginatedResult<any[]>> {
@@ -34,7 +35,7 @@ export class ProjectService {
         params = params.append('searchValue', pagingParams.searchValue || '');
         params = params.append('languageId', pagingParams.languageId || '');
 
-        return this.http.get<any[]>(this.baseUrl + 'getAllPaging', { observe: 'response', params })
+        return this.http.get<any[]>(this.baseUrl + 'getAllPaging', { observe: 'response', params, ...getHeader() })
             .pipe(
                 map(response => {
                     paginatedResult.result = Object.assign([], response.body);
@@ -51,18 +52,18 @@ export class ProjectService {
     }
 
     getById(id: any) {
-        return this.http.get(this.baseUrl + id);
+        return this.http.get(this.baseUrl + id, getHeader());
     }
 
     create(data: any) {
-        return this.http.post(this.baseUrl, data);
+        return this.http.post(this.baseUrl, data, getHeader());
     }
 
     update(data: any) {
-        return this.http.put(this.baseUrl, data);
+        return this.http.put(this.baseUrl, data, getHeader());
     }
 
     delete(id: any) {
-        return this.http.delete(this.baseUrl + id);
+        return this.http.delete(this.baseUrl + id, getHeader());
     }
 }

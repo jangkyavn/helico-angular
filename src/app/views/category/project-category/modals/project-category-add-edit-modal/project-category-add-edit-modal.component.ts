@@ -2,9 +2,9 @@ import { Component, OnInit, Input, HostListener } from '@angular/core';
 import { ProjectCategoryService } from 'src/app/shared/services/project-category.service';
 import { MessageService } from 'src/app/shared/services/message.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NzModalRef } from 'ng-zorro-antd';
 import { MessageConstant } from 'src/app/shared/constants/message.constant';
 import { DataService } from 'src/app/shared/services/data.service';
+import { NzModalRef } from 'ng-zorro-antd/modal';
 
 @Component({
   selector: 'app-project-category-add-edit-modal',

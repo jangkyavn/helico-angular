@@ -26,26 +26,6 @@ export function tokenGetter() {
   return localStorage.getItem(SessionConstant.TOKEN);
 }
 
-export function jwtOptionsFactory() {
-  return {
-    tokenGetter,
-    skipWhenExpired: true,
-    whitelistedDomains,
-    blacklistedRoutes
-  };
-}
-
-export const whitelistedDomains = [
-  new RegExp('localhost:?[0-9]*'),
-  new RegExp('([a-zA-Z0-9-_]+\.)dvbk+\.vn$'),
-  new RegExp('([a-zA-Z0-9-_]+\.)pmbk+\.vn$')
-] as RegExp[];
-export const blacklistedRoutes = [
-  new RegExp('localhost:?[0-9]*\/api\/auth'),
-  new RegExp('([a-zA-Z0-9-_]+\.)dvbk+\.vn\/api\/auth$'),
-  new RegExp('([a-zA-Z0-9-_]+\.)pmbk+\.vn\/api\/auth$')
-] as RegExp[];
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -62,11 +42,12 @@ export const blacklistedRoutes = [
     SharedModule,
     IconsProviderModule,
     JwtModule.forRoot({
-      jwtOptionsProvider: {
-        provide: JWT_OPTIONS,
-        useFactory: jwtOptionsFactory
-      }
-    })
+      config: {
+        skipWhenExpired: true,
+        tokenGetter: tokenGetter,
+        allowedDomains: ["localhost:4200"]
+      },
+    }),
   ],
   providers: [
     { provide: NZ_I18N, useValue: vi_VN },
